@@ -103,8 +103,8 @@ tags
 
 # Cmake files
 CMakeCache.txt
-CMakeFiles
-Makefile
+#CMakeFiles
+#Makefile
 cmake_install.cmake
 CMakeLists.txt.user
 
@@ -118,8 +118,8 @@ tests/*/publish/
 project.properties
 
 # Ignore prebuilt libraries folder
-/external/*
-!/external/config.json
+#/external/*
+#!/external/config.json
 /templates/lua-template-runtime/runtime
 /v*-deps-*.zip
 /v*-lua-runtime-*.zip
