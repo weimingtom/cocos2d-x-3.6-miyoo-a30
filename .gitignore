@@ -39,12 +39,12 @@ Generated Files
 AppPackages
 
 # Ignore files build by ndk and eclipse
-libs/
+#libs/
 bin/
 obj/
 gen/
-assets/
-local.properties
+#assets/
+#local.properties
 
 # Ignore python compiled files
 *.pyc
@@ -115,7 +115,7 @@ tests/*/runtime/
 tests/*/publish/
 
 # Android
-project.properties
+#project.properties
 
 # Ignore prebuilt libraries folder
 #/external/*
