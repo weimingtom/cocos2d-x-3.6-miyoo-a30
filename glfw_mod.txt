@@ -1,0 +1,66 @@
+CCGLViewImpl-desktop.cpp
+CCGLViewImpl-desktop.h
+CCGL-linux.h
+(x) CCGLView.cpp
+
+
+ || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX
+
+USE_NO_GLFW
+
+#ifndef GL_VERTEX_PROGRAM_POINT_SIZE
+#define GL_VERTEX_PROGRAM_POINT_SIZE 0x8642 
+#endif
+
+
+#if 0
+            void *buf = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+            memcpy(buf, _quads, sizeof(_quads[0])* _totalQuads);
+            glUnmapBuffer(GL_ARRAY_BUFFER);
+#endif  
+
+---
+CCGLProgram.cpp
+
+ && CC_TARGET_PLATFORM != CC_PLATFORM_LINUX
+ 
+---
+not changed, resource folder beside elf file:
+
+CCFileUtils-linux.cpp
+    _defaultResRootPath = appPath.substr(0, appPath.find_last_of("/"));
+    _defaultResRootPath += CC_RESOURCE_FOLDER_LINUX;
+	
+---
+#if USE_NO_GLFW
+	return initWithRect(viewName, Rect(0, 0, 480, 640), 1.0f);
+#else	
+---
+CCClippingNode.cpp
+
+ || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX
+ 
+void ClippingNode::visit(Renderer *renderer, const Mat4 &parentTransform, uint32_t parentFlags)
+{
+...
+    if (_alphaThreshold < 1)
+    {
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_MAC || CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+#else
+
+----
+
+??? must keep this line
+rederer/CCGLProgram.cpp
+
+    const GLchar *sources[] = {
+#if CC_TARGET_PLATFORM == CC_PLATFORM_WINRT
+        (type == GL_VERTEX_SHADER ? "precision mediump float;\n precision mediump int;\n" : "precision mediump float;\n precision mediump int;\n"),
+#elif (CC_TARGET_PLATFORM != CC_PLATFORM_WIN32 && CC_TARGET_PLATFORM != CC_PLATFORM_MAC && CC_TARGET_PLATFORM != CC_PLATFORM_LINUX)
+        (type == GL_VERTEX_SHADER ? "precision highp float;\n precision highp int;\n" : "precision mediump float;\n precision mediump int;\n"),
+#endif
+
+----
+
+
+
