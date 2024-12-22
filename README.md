@@ -25,5 +25,8 @@ dmgame.rar
 https://github.com/u0u0/Quick-Cocos2dx-Community/blob/master/quick/template/src/main.lua    
 Quick-Cocos2dx-Community  
 Quick-Cocos2dx-Community_3.6_release_190dccc.zip  
+* Doudizhu.zip  
+萌妹斗地主_cocos2dx_scut, client  
+https://github.com/ScutGame/Client-source/tree/master  
 * https://github.com/meetleev/CocosGui/tree/master  
 guiForLua.rar  
