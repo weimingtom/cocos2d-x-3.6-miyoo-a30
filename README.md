@@ -26,8 +26,9 @@ https://github.com/u0u0/Quick-Cocos2dx-Community/blob/master/quick/template/src/
 Quick-Cocos2dx-Community  
 Quick-Cocos2dx-Community_3.6_release_190dccc.zip  
 * Doudizhu.zip  
-萌妹斗地主_cocos2dx_scut, client  
+萌妹斗地主_cocos2dx_scut, client, Cocos2d-x游戏《萌妹斗地主》客户端    
 https://github.com/ScutGame/Client-source/tree/master  
 * https://github.com/meetleev/CocosGui/tree/master  
 guiForLua.rar  
 * cocos2d-x3.6 连连看完整源码   
+* Cocos2d-x 3.x 案例开发大全（第2版）    
