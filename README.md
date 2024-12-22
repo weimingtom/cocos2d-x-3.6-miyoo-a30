@@ -30,3 +30,4 @@ Quick-Cocos2dx-Community_3.6_release_190dccc.zip
 https://github.com/ScutGame/Client-source/tree/master  
 * https://github.com/meetleev/CocosGui/tree/master  
 guiForLua.rar  
+* cocos2d-x3.6 连连看完整源码   
