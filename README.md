@@ -24,3 +24,5 @@ dmgame.rar
 * http://www.cocos2d-lua.org/download/index.md  
 https://github.com/u0u0/Quick-Cocos2dx-Community/blob/master/quick/template/src/main.lua    
 Quick-Cocos2dx-Community  
+* https://github.com/meetleev/CocosGui/tree/master
+guiForLua.rar  
