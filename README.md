@@ -17,3 +17,10 @@ https://www.khronos.org/assets/uploads/books/openglr_es_20_programming_guide_sam
 ## TODO: Implement input function, do_capture  
 * https://github.com/weimingtom/xiaozhi_playground/blob/master/qt4-nes_with_input/qt4-nes_v12_button_input_success.tar.gz  
 evtest tiny version, see qt4-nes_v12_button_input_success.tar.gz\qt4-nes\Qt\NesEmulateWindow.cpp  
+
+## TODO
+* https://github.com/CeZQ/dmgame
+dmgame.rar
+* http://www.cocos2d-lua.org/download/index.md
+https://github.com/u0u0/Quick-Cocos2dx-Community/blob/master/quick/template/src/main.lua  
+Quick-Cocos2dx-Community
