@@ -2,7 +2,7 @@
 #1: miyoo a30 and rg28xx
 #2: trimui smart pro
 #3: trimui brick
-MIYOO := 1
+MIYOO := 0
 
 ifeq ($(MIYOO),3)
 CC = /home/wmt/work_trimui/aarch64-linux-gnu-7.5.0-linaro/bin/aarch64-linux-gnu-gcc
@@ -30,7 +30,7 @@ RM := rm -rf
 CPPFLAGS := 
 CPPFLAGS += -I.   
 #CPPFLAGS += -g -O2
-CPPFLAGS += -g3 -O0
+#CPPFLAGS += -g3 -O0
 
 ifeq ($(MIYOO),3)
 #trimui brick
@@ -38,18 +38,21 @@ CPPFLAGS += -DUSE_APP_WIDTH=1024
 CPPFLAGS += -DUSE_APP_HEIGHT=768
 CPPFLAGS += -DUSE_NO_GLFW=1
 CPPFLAGS += -DUSE_ROTATE90=0
+CPPFLAGS += -g0 -O3
 else ifeq ($(MIYOO),2)
 #trimui smart pro
 CPPFLAGS += -DUSE_APP_WIDTH=1280
 CPPFLAGS += -DUSE_APP_HEIGHT=720
 CPPFLAGS += -DUSE_NO_GLFW=1
 CPPFLAGS += -DUSE_ROTATE90=0
+CPPFLAGS += -g0 -O3
 else ifeq ($(MIYOO),1)
 #miyoo a30 and rg28xx
 CPPFLAGS += -DUSE_APP_WIDTH=640
 CPPFLAGS += -DUSE_APP_HEIGHT=480
 CPPFLAGS += -DUSE_NO_GLFW=1
 CPPFLAGS += -DUSE_ROTATE90=1
+CPPFLAGS += -g0 -O3
 else
 #pc
 CPPFLAGS += -DUSE_APP_WIDTH=640
@@ -58,6 +61,7 @@ CPPFLAGS += -DUSE_NO_GLFW=0 -DUSE_SHADER_PRECISION=1
 #if PC use OpenGLES to replace OpenGL, need USE_SHADER_PRECISION
 #cocos2d-x debug info [cocos2d: 0:1(1): error: No precision specified in this scope for type `mat4'
 CPPFLAGS += -DUSE_ROTATE90=0
+CPPFLAGS += -g3 -O0
 endif
 
 CPPFLAGS += -DCC_ENABLE_BOX2D_INTEGRATION=0 
@@ -80,13 +84,16 @@ CPPFLAGS += -fno-exceptions
 CPPFLAGS += -fexceptions 
 
 CPPFLAGS += -Wno-deprecated-declarations 
-CPPFLAGS += -Wno-reorder 
+#only c:
+#CPPFLAGS += -Wno-reorder 
 CPPFLAGS += -Wall 
 
 CPPFLAGS += -I. 
 CPPFLAGS += -Icocos 
 CPPFLAGS += -Icocos/platform 
+#FIXME:
 CPPFLAGS += -Icocos/platform/desktop 
+CPPFLAGS += -Icocos/platform/linux 
 CPPFLAGS += -Icocos/audio/include 
 CPPFLAGS += -Icocos/editor-support
 CPPFLAGS += -Ideprecated 
@@ -102,6 +109,13 @@ CPPFLAGS += -Iexternal/xxtea
 CPPFLAGS += -Iexternal/unzip 
 CPPFLAGS += -Iexternal/tinyxml2 
 CPPFLAGS += -Iexternal/xxhash 
+
+CPPFLAGS += -Icocos/ui
+CPPFLAGS += -Icocos/ui/UIEditBox
+CPPFLAGS += -Icocos/editor-support/cocosbuilder
+CPPFLAGS += -Icocos/editor-support/cocostudio
+CPPFLAGS += -Icocos/editor-support/cocostudio/ActionTimeline
+CPPFLAGS += -Icocos/editor-support/cocostudio/WidgetReader
 
 #CPPFLAGS += -I/usr/include/webp
 #CPPFLAGS += -I/usr/include/i386-linux-gnu 
@@ -121,7 +135,7 @@ CPPFLAGS += -I/home/wmt/work_a30/staging_dir/target/usr/include
 CPPFLAGS += -I/home/wmt/work_a30/staging_dir/target/usr/include/webp
 CPPFLAGS += -I/home/wmt/work_a30/staging_dir/target/usr/include/freetype2
 else
-#xubuntu 16
+#xubuntu 20
 #sudo apt install libglfw3-dev libpng-dev zlib1g-dev libjpeg-dev libfreetype-dev libbz2-dev
 CPPFLAGS += -I/usr/include
 CPPFLAGS += -I/usr/include/webp
@@ -143,7 +157,8 @@ LDFLAGS :=
 #LDFLAGS += -lcurl 
 #LDFLAGS += -lX11 
 
-LDFLAGS += -lfreetype -lbz2 
+LDFLAGS += -lfreetype -lbz2
+#NOTE: -lbz2 is not necessary for PC xubuntu 20.04
 LDFLAGS += -lpthread 
 LDFLAGS += -lz 
 LDFLAGS += -ljpeg 
@@ -380,6 +395,171 @@ OBJS += external/unzip/unzip.o
 
 #LDFLAGS += ../../lib/libxxhash.a 
 OBJS += external/xxhash/xxhash.o
+
+#ui
+OBJS += cocos/ui/UIWidget.o
+OBJS += cocos/ui/UILayout.o
+OBJS += cocos/ui/UILayoutParameter.o
+OBJS += cocos/ui/UILayoutManager.o
+OBJS += cocos/ui/CocosGUI.o
+OBJS += cocos/ui/UIHelper.o
+OBJS += cocos/ui/UIListView.o
+OBJS += cocos/ui/UIPageView.o
+OBJS += cocos/ui/UIScrollView.o
+OBJS += cocos/ui/UIButton.o
+OBJS += cocos/ui/UICheckBox.o
+OBJS += cocos/ui/UIImageView.o
+OBJS += cocos/ui/UIText.o
+OBJS += cocos/ui/UITextAtlas.o
+OBJS += cocos/ui/UITextBMFont.o
+OBJS += cocos/ui/UILoadingBar.o
+OBJS += cocos/ui/UISlider.o
+OBJS += cocos/ui/UITextField.o
+OBJS += cocos/ui/UIRichText.o
+OBJS += cocos/ui/UIHBox.o
+OBJS += cocos/ui/UIVBox.o
+OBJS += cocos/ui/UIRelativeBox.o
+OBJS += cocos/ui/UIVideoPlayer-android.o
+OBJS += cocos/ui/UIDeprecated.o
+OBJS += cocos/ui/UIScale9Sprite.o
+OBJS += cocos/ui/UIWebView.o
+OBJS += cocos/ui/UIWebViewImpl-android.o
+OBJS += cocos/ui/UIEditBox/UIEditBox.o
+OBJS += cocos/ui/UIEditBox/UIEditBoxImpl-android.o
+OBJS += cocos/ui/UILayoutComponent.o
+
+#cocosbuilder
+OBJS += cocos/editor-support/cocosbuilder/CCBAnimationManager.o
+OBJS += cocos/editor-support/cocosbuilder/CCBFileLoader.o
+OBJS += cocos/editor-support/cocosbuilder/CCBKeyframe.o
+OBJS += cocos/editor-support/cocosbuilder/CCBReader.o
+OBJS += cocos/editor-support/cocosbuilder/CCBSequence.o
+OBJS += cocos/editor-support/cocosbuilder/CCBSequenceProperty.o
+OBJS += cocos/editor-support/cocosbuilder/CCControlButtonLoader.o
+OBJS += cocos/editor-support/cocosbuilder/CCControlLoader.o
+OBJS += cocos/editor-support/cocosbuilder/CCLabelBMFontLoader.o
+OBJS += cocos/editor-support/cocosbuilder/CCLabelTTFLoader.o
+OBJS += cocos/editor-support/cocosbuilder/CCLayerColorLoader.o
+OBJS += cocos/editor-support/cocosbuilder/CCLayerGradientLoader.o
+OBJS += cocos/editor-support/cocosbuilder/CCLayerLoader.o
+OBJS += cocos/editor-support/cocosbuilder/CCMenuItemImageLoader.o
+OBJS += cocos/editor-support/cocosbuilder/CCMenuItemLoader.o
+OBJS += cocos/editor-support/cocosbuilder/CCNode+CCBRelativePositioning.o
+OBJS += cocos/editor-support/cocosbuilder/CCNodeLoader.o
+OBJS += cocos/editor-support/cocosbuilder/CCNodeLoaderLibrary.o
+OBJS += cocos/editor-support/cocosbuilder/CCParticleSystemQuadLoader.o
+OBJS += cocos/editor-support/cocosbuilder/CCScale9SpriteLoader.o
+OBJS += cocos/editor-support/cocosbuilder/CCScrollViewLoader.o
+OBJS += cocos/editor-support/cocosbuilder/CCSpriteLoader.o
+
+#cocosstudio
+OBJS += cocos/editor-support/cocostudio/CCActionFrame.o
+OBJS += cocos/editor-support/cocostudio/CCActionFrameEasing.o
+OBJS += cocos/editor-support/cocostudio/CCActionManagerEx.o
+OBJS += cocos/editor-support/cocostudio/CCActionNode.o
+OBJS += cocos/editor-support/cocostudio/CCActionObject.o
+OBJS += cocos/editor-support/cocostudio/CCArmature.o
+OBJS += cocos/editor-support/cocostudio/CCBone.o
+OBJS += cocos/editor-support/cocostudio/CCArmatureAnimation.o
+OBJS += cocos/editor-support/cocostudio/CCProcessBase.o
+OBJS += cocos/editor-support/cocostudio/CCTween.o
+OBJS += cocos/editor-support/cocostudio/CCDatas.o
+OBJS += cocos/editor-support/cocostudio/CCBatchNode.o
+OBJS += cocos/editor-support/cocostudio/CCDecorativeDisplay.o
+OBJS += cocos/editor-support/cocostudio/CCDisplayFactory.o
+OBJS += cocos/editor-support/cocostudio/CCDisplayManager.o
+OBJS += cocos/editor-support/cocostudio/CCSkin.o
+OBJS += cocos/editor-support/cocostudio/CCColliderDetector.o
+OBJS += cocos/editor-support/cocostudio/CCArmatureDataManager.o
+OBJS += cocos/editor-support/cocostudio/CCArmatureDefine.o
+OBJS += cocos/editor-support/cocostudio/CCDataReaderHelper.o
+OBJS += cocos/editor-support/cocostudio/CCSpriteFrameCacheHelper.o
+OBJS += cocos/editor-support/cocostudio/CCTransformHelp.o
+OBJS += cocos/editor-support/cocostudio/CCUtilMath.o
+OBJS += cocos/editor-support/cocostudio/CCComAttribute.o
+OBJS += cocos/editor-support/cocostudio/CCComAudio.o
+OBJS += cocos/editor-support/cocostudio/CCComController.o
+OBJS += cocos/editor-support/cocostudio/CCComRender.o
+OBJS += cocos/editor-support/cocostudio/CCInputDelegate.o
+OBJS += cocos/editor-support/cocostudio/DictionaryHelper.o
+OBJS += cocos/editor-support/cocostudio/CCSGUIReader.o
+OBJS += cocos/editor-support/cocostudio/CCSSceneReader.o
+OBJS += cocos/editor-support/cocostudio/TriggerBase.o
+OBJS += cocos/editor-support/cocostudio/TriggerMng.o
+OBJS += cocos/editor-support/cocostudio/TriggerObj.o
+OBJS += cocos/editor-support/cocostudio/CocoLoader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/NodeReader/NodeReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/SingleNodeReader/SingleNodeReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/SpriteReader/SpriteReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/ParticleReader/ParticleReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/GameMapReader/GameMapReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/ProjectNodeReader/ProjectNodeReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/ComAudioReader/ComAudioReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/WidgetReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/ButtonReader/ButtonReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/CheckBoxReader/CheckBoxReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/ImageViewReader/ImageViewReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/LayoutReader/LayoutReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/ListViewReader/ListViewReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/LoadingBarReader/LoadingBarReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/PageViewReader/PageViewReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/ScrollViewReader/ScrollViewReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/SliderReader/SliderReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/TextAtlasReader/TextAtlasReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/TextBMFontReader/TextBMFontReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/TextFieldReader/TextFieldReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/TextReader/TextReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/Node3DReader/Node3DReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/Sprite3DReader/Sprite3DReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/UserCameraReader/UserCameraReader.o
+OBJS += cocos/editor-support/cocostudio/ActionTimeline/CCActionTimelineCache.o
+OBJS += cocos/editor-support/cocostudio/ActionTimeline/CCFrame.o
+OBJS += cocos/editor-support/cocostudio/ActionTimeline/CCTimeLine.o
+OBJS += cocos/editor-support/cocostudio/ActionTimeline/CCActionTimeline.o
+OBJS += cocos/editor-support/cocostudio/ActionTimeline/CCActionTimelineNode.o
+OBJS += cocos/editor-support/cocostudio/ActionTimeline/CSLoader.o
+OBJS += cocos/editor-support/cocostudio/FlatBuffersSerialize.o
+OBJS += cocos/editor-support/cocostudio/WidgetCallBackHandlerProtocol.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/ArmatureNodeReader/ArmatureNodeReader.o
+OBJS += cocos/editor-support/cocostudio/CCObjectExtensionData.o
+OBJS += cocos/editor-support/cocostudio/CocoStudio.o
+
+#3d
+OBJS += cocos/3d/CCRay.o
+OBJS += cocos/3d/CCAABB.o
+OBJS += cocos/3d/CCOBB.o
+OBJS += cocos/3d/CCAnimate3D.o
+OBJS += cocos/3d/CCAnimation3D.o
+OBJS += cocos/3d/CCAttachNode.o
+OBJS += cocos/3d/CCBillBoard.o
+OBJS += cocos/3d/CCBundle3D.o
+OBJS += cocos/3d/CCBundleReader.o
+OBJS += cocos/3d/CCMesh.o
+OBJS += cocos/3d/CCMeshSkin.o
+OBJS += cocos/3d/CCMeshVertexIndexData.o
+OBJS += cocos/3d/CCSprite3DMaterial.o
+OBJS += cocos/3d/CCObjLoader.o
+OBJS += cocos/3d/CCSkeleton3D.o
+OBJS += cocos/3d/CCSprite3D.o
+OBJS += cocos/3d/CCTerrain.o
+OBJS += cocos/3d/CCSkybox.o
+OBJS += cocos/3d/CCTextureCube.o
+
+#extensions ScrollView
+OBJS += extensions/GUI/CCControlExtension/CCControl.o
+OBJS += extensions/GUI/CCControlExtension/CCControlButton.o
+OBJS += extensions/GUI/CCControlExtension/CCControlColourPicker.o
+OBJS += extensions/GUI/CCControlExtension/CCControlHuePicker.o
+OBJS += extensions/GUI/CCControlExtension/CCControlPotentiometer.o
+OBJS += extensions/GUI/CCControlExtension/CCControlSaturationBrightnessPicker.o
+OBJS += extensions/GUI/CCControlExtension/CCControlSlider.o
+OBJS += extensions/GUI/CCControlExtension/CCControlStepper.o
+OBJS += extensions/GUI/CCControlExtension/CCControlSwitch.o
+OBJS += extensions/GUI/CCControlExtension/CCControlUtils.o
+OBJS += extensions/GUI/CCControlExtension/CCInvocation.o
+OBJS += extensions/GUI/CCScrollView/CCScrollView.o
+OBJS += extensions/GUI/CCScrollView/CCTableView.o
+OBJS += extensions/GUI/CCScrollView/CCTableViewCell.o
 
 HELLOCPP_OBJS :=
 HELLOCPP_OBJS += tests/cpp-empty-test/Classes/AppDelegate.o

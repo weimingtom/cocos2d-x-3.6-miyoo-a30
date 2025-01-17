@@ -32,3 +32,30 @@ https://github.com/ScutGame/Client-source/tree/master
 guiForLua.rar  
 * cocos2d-x3.6 连连看完整源码   
 * Cocos2d-x 3.x 案例开发大全（第2版）    
+
+## How to Build  
+* For PC, xubuntu 20.04 64bit  
+libbz2-dev isn't necessary, only for cross compiling  
+```
+sudo apt install libglfw3-dev
+sudo apt install libfreetype-dev
+sudo apt install libjpeg-dev
+sudo apt install libbz2-dev
+sudo apt install make gcc g++ gdb
+
+make MIYOO=0 clean
+make MIYOO=0 -j8
+make test
+```
+* For TRIMUI SMART PRO  
+```
+cd /home/wmt/work_trimui/
+tar xzf aarch64-linux-gnu-7.5.0-linaro.tgz 
+tar xzf SDK_usr_tg5040_a133p.tgz
+
+cd /home/wmt/work_cocos2dx/cocos2d-x-3.6-miyoo-a30/
+make MIYOO=2 clean
+make MIYOO=2 -j8
+file tests/cpp-empty-test/cpp-empty-test
+```
+

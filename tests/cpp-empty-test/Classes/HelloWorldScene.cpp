@@ -1,8 +1,11 @@
 #include "HelloWorldScene.h"
 #include "AppMacros.h"
 
-USING_NS_CC;
+#include "cocostudio/CocoStudio.h"
+#include "ui/CocosGUI.h"
+using namespace cocostudio::timeline;
 
+USING_NS_CC;
 
 Scene* HelloWorld::scene()
 {
@@ -22,6 +25,8 @@ Scene* HelloWorld::scene()
 // on "init" you need to initialize your instance
 bool HelloWorld::init()
 {
+#if 0 //you can create scene with following comment code instead of using csb file.
+
     //////////////////////////////
     // 1. super init first
     if ( !Layer::init() )
@@ -72,6 +77,19 @@ bool HelloWorld::init()
 
     // add the sprite as a child to this layer
     this->addChild(sprite);
+#else
+
+    //////////////////////////////
+    // 1. super init first
+    if ( !Layer::init() )
+    {
+        return false;
+    }
+    
+    auto rootNode = CSLoader::createNode("MainScene.csb");
+
+    addChild(rootNode);
+#endif    
     
     return true;
 }

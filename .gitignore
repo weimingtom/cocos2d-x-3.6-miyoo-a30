@@ -1,3 +1,5 @@
+*.sdf
+Debug.win32
 # Ignore thumbnails created by windows
 Thumbs.db
 
@@ -129,3 +131,4 @@ tests/cpp-tests/Resources/audio
 /tests/lua-empty-test/src/cocos/
 /tests/lua-game-controller-test/src/cocos/
 /tests/lua-tests/src/cocos/
+

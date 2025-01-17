@@ -39,7 +39,7 @@ const int FontAtlas::CacheTextureHeight = 512;
 const char* FontAtlas::CMD_PURGE_FONTATLAS = "__cc_PURGE_FONTATLAS";
 const char* FontAtlas::CMD_RESET_FONTATLAS = "__cc_RESET_FONTATLAS";
 
-FontAtlas::FontAtlas(Font &theFont) 
+FontAtlas::FontAtlas(Font_ &theFont) 
 : _font(&theFont)
 , _currentPageData(nullptr)
 , _fontAscender(0)
@@ -311,7 +311,7 @@ void  FontAtlas::setCommonLineHeight(float newHeight)
     _commonLineHeight = newHeight;
 }
 
-const Font * FontAtlas::getFont() const
+const Font_ * FontAtlas::getFont() const
 {
     return _font;
 }
