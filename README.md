@@ -88,4 +88,6 @@ using std::isnan;
 * Copy cocos/editor-support/cocostudio to cocos/ for C++ include path  
 * cmake min: cocos2d-x-3.6_v3.tar.gz  
 * cmake min with csb: cocos2d-x-3.6_v3.1.tar.gz  
-* make min: cocos2d-x-3.6_v5.tar.gz  
+* make min: cocos2d-x-3.6_v5.tar.gz
+* GLES2 merge back to pc: cocos2d-x-3.6_v3.5_merge_back_pc.tar.gz    
+
