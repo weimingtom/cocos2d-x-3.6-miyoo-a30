@@ -59,3 +59,23 @@ make MIYOO=2 -j8
 file tests/cpp-empty-test/cpp-empty-test
 ```
 
+## How to build original version Cocos2d-x 3.6   
+*　修改cocos/platform/linux/CCStdC-Linux.h  
+#include <math.h>  
+改成  
+#include <cmath>  
+using std::isnan;  
+```
+在ubuntu 16上编译运行cocos2d-x 3.6的效果，
+只能说要改一些东西，需要装cmake和libglfw3-dev，
+最麻烦的是glfw3，因为ubuntu 14很难cmake编译安装glfw3，
+所以需要用ubuntu 16或以上，
+另外glfw3需要较旧的版本3.0.4，
+这里直接用apt安装即可。
+编译方法是先执行cocos2d-x 2的install-deps-linux.sh，
+然后apt安装libglfw3-dev（它会把libglfw-dev自动卸载），
+然后就可以成功cmake了。
+执行make后可能会有编译错误，需要在CCStdC-linux.h
+里面加上include <cmath>和using std::isnan;
+```
+
