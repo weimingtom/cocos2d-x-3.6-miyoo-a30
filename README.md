@@ -64,7 +64,7 @@ file tests/cpp-empty-test/cpp-empty-test
 * ./install_deps_linux.sh  
 * cmake ..  
 * Modify cocos/platform/linux/CCStdC-Linux.h   
-``
+```
 #include <math.h>  
 改成  
 #include <cmath>  
