@@ -86,3 +86,5 @@ using std::isnan;
 里面加上include <cmath>和using std::isnan;
 ```
 * Copy cocos/editor-support/cocostudio to cocos/ for C++ include path  
+* cmake min: cocos2d-x-3.6_v3.tar.gz  
+* cmake min with csb: cocos2d-x-3.6_v3.1.tar.gz  
