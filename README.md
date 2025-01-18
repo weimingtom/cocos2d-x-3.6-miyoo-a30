@@ -60,11 +60,16 @@ file tests/cpp-empty-test/cpp-empty-test
 ```
 
 ## How to build original version Cocos2d-x 3.6   
-*　修改cocos/platform/linux/CCStdC-Linux.h  
+* cd build  
+* ./install_deps_linux.sh  
+* cmake ..  
+* Modify cocos/platform/linux/CCStdC-Linux.h   
+``
 #include <math.h>  
 改成  
 #include <cmath>  
 using std::isnan;  
+```
 ```
 在ubuntu 16上编译运行cocos2d-x 3.6的效果，
 只能说要改一些东西，需要装cmake和libglfw3-dev，
