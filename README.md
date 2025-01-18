@@ -85,4 +85,4 @@ using std::isnan;
 执行make后可能会有编译错误，需要在CCStdC-linux.h
 里面加上include <cmath>和using std::isnan;
 ```
-
+* Copy cocos/editor-support/cocostudio to cocos/ for C++ include path  
