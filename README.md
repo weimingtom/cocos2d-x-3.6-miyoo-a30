@@ -60,6 +60,8 @@ file tests/cpp-empty-test/cpp-empty-test
 ```
 
 ## How to build original version Cocos2d-x 3.6   
+* sudo apt install libglfw3-dev
+* comment last line of build/install_deps_linux.sh  
 * cd build  
 * ./install_deps_linux.sh  
 * cmake ..  
