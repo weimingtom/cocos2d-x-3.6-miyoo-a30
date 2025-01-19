@@ -1,0 +1,5 @@
+/usr/share/fonts/truetype/
+
+openat(AT_FDCWD, "Helvetica", O_RDONLY) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/usr/share/fonts/truetype/freefont/FreeSerif.ttf", O_RDONLY) = 5
+

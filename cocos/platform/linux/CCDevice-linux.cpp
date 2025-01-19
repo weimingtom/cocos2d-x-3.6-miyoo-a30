@@ -34,6 +34,10 @@ THE SOFTWARE.
 #endif
 #include <stdio.h>
 
+#if MY_USE_FREESERIF
+#include <unistd.h> //readlink
+#endif
+
 #include <algorithm>
 #include <vector>
 #include <map>
@@ -394,7 +398,25 @@ public:
         std::string fontfile = getFontFile(textDefinition._fontName.c_str());
         if ( FT_New_Face(library, fontfile.c_str(), 0, &face) ) {
             //no valid font found use default
+#if MY_USE_FREESERIF
+    // get application path
+    char fullpath[256] = {0};
+    ssize_t length = readlink("/proc/self/exe", fullpath, sizeof(fullpath)-1);
+
+    std::string fontPath;
+    if (length <= 0) {
+        fontPath = "./FreeSerif.ttf";
+    } else {
+        fullpath[length] = '\0';
+        std::string appPath = fullpath;
+        fontPath = appPath.substr(0, appPath.find_last_of("/"));
+        fontPath += "/FreeSerif.ttf";
+    }
+printf("<<<<CCDevice-linux.cpp FT_New_Face : %s\n", fontPath.c_str());
+            if ( FT_New_Face(library, fontPath.c_str()/*"./FreeSerif.ttf"*/, 0, &face) ) {
+#else
             if ( FT_New_Face(library, "/usr/share/fonts/truetype/freefont/FreeSerif.ttf", 0, &face) ) {
+#endif
                 return false;
             }
         }

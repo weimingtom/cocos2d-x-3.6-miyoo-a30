@@ -76,6 +76,9 @@ CPPFLAGS += -DGLFW_DLL
 CPPFLAGS += -DLINUX 
 CPPFLAGS += -DCOCOS2D_DEBUG=1
 
+CPPFLAGS += -DMY_USE_FREESERIF=1
+CPPFLAGS += -DMY_USE_UIBUTTON_SETTITLECOLOR=1
+
 #see below
 CPPFLAGS2 := 
 CPPFLAGS2 += -std=c++11 
@@ -585,6 +588,11 @@ tests/cpp-empty-test/cpp-empty-test: cocos2dx.a $(HELLOCPP_OBJS)
 	
 test:
 	./tests/cpp-empty-test/cpp-empty-test
+
+debug:
+	gdb ./tests/cpp-empty-test/cpp-empty-test
+
+#b Button::setTitleColor
 
 clean :
 	$(RM) $(OBJS) $(HELLOCPP_OBJS) cocos2dx.a tests/cpp-empty-test/cpp-empty-test
