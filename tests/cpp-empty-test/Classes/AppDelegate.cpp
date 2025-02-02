@@ -1,119 +1,261 @@
-#include "AppDelegate.h"
+#define USE_HELLO 0
+#define USE_HELLO_DESIGN_RES 1
 
-#include <vector>
-#include <string>
+#include "AppDelegate.h"
+#include "MainScene.h"
+#include "ui/MainFileSelectorForm.h"
+#include "ui/extension/UIExtension.h"
+#include "cocostudio/FlatBuffersSerialize.h"
+//#include "ConfigManager/LocaleConfigManager.h"
+//#include "ConfigManager/GlobalConfigManager.h"
+//#include "Application.h"
+//#include "Platform.h"
+#include "ui/MessageBox.h"
+#include "ui/GlobalPreferenceForm.h"
+//#include "CustomFileUtils.h"
 
 #include "HelloWorldScene.h"
-#include "AppMacros.h"
 
 USING_NS_CC;
-using namespace std;
 
-AppDelegate::AppDelegate() {
+static Size designResolutionSize(960, 640);
+bool TVPCheckStartupArg();
+std::string TVPGetCurrentLanguage();
 
+void TVPAppDelegate::applicationWillEnterForeground() {
+//	::Application->OnActivate();
+	Director::getInstance()->startAnimation();
 }
 
-AppDelegate::~AppDelegate() 
-{
+void TVPAppDelegate::applicationDidEnterBackground() {
+//	::Application->OnDeactivate();
+	Director::getInstance()->stopAnimation();
 }
 
-void AppDelegate::initGLContextAttrs()
-{
-    GLContextAttrs glContextAttrs = {8, 8, 8, 8, 24, 8};
-
-    GLView::setGLContextAttrs(glContextAttrs);
-}
-
-bool AppDelegate::applicationDidFinishLaunching() {
-    // initialize director
-    auto director = Director::getInstance();
-    auto glview = director->getOpenGLView();
-    if(!glview) {
-        glview = GLViewImpl::create("Cpp Empty Test"); //glview = GLViewImpl::createWithRect("test1", Rect(0, 0, 960, 640));
-        director->setOpenGLView(glview);
-    }
-#if 1
-//view port 960 x 640 should be set to the windows width x height 
-    director->getOpenGLView()->setDesignResolutionSize(960, 640, ResolutionPolicy::SHOW_ALL);
-//if window is 960 and 640 and view port is 640 x 480, show left bottom part 
-//glview->setDesignResolutionSize(640, 480, ResolutionPolicy::SHOW_ALL);
+bool TVPAppDelegate::applicationDidFinishLaunching() {
+	cocos2d::log("applicationDidFinishLaunching");
+	// initialize director
+	//FileUtils::setDelegate(TVPCreateCustomFileUtils());
+	auto director = Director::getInstance();
+	auto glview = director->getOpenGLView();
+#if defined(ANDROID) || defined(LINUX)
+#if defined(LINUX)
+	printf("*** *** applicationDidFinishLaunching 001\n");
 #else
-//FIXME:do not use below code in GLES2, will cause bug, the controls will be hidden 
-    director->setOpenGLView(glview);
-
-    // Set the design resolution
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_WP8)
-    // a bug in DirectX 11 level9-x on the device prevents ResolutionPolicy::NO_BORDER from working correctly
-    glview->setDesignResolutionSize(designResolutionSize.width, designResolutionSize.height, ResolutionPolicy::SHOW_ALL);
+	__android_log_print(ANDROID_LOG_ERROR, "AppDelegate.cpp", "%s", "*** *** applicationDidFinishLaunching 001");
+#endif
+#endif
+	if (!glview) {
+		glview = GLViewImpl::create("kirikiri2 frame");
+		director->setOpenGLView(glview);
+#if CC_PLATFORM_WIN32 == CC_TARGET_PLATFORM
+		glview->setFrameSize(960, 640);
+#endif
+	}
+#if defined(ANDROID) || defined(LINUX)
+#if defined(LINUX)
+	printf("*** *** applicationDidFinishLaunching 002\n");
 #else
-    glview->setDesignResolutionSize(designResolutionSize.width, designResolutionSize.height, ResolutionPolicy::NO_BORDER);
+	__android_log_print(ANDROID_LOG_ERROR, "AppDelegate.cpp", "%s", "*** *** applicationDidFinishLaunching 002");
+#endif
+#endif
+
+#if USE_HELLO_DESIGN_RES
+	glview->setDesignResolutionSize(1280, 720, ResolutionPolicy::SHOW_ALL);
+#else
+	// Set the design resolution
+	Size screenSize = glview->getFrameSize();
+	Size designSize = designResolutionSize;
+	designSize.height = designSize.width * screenSize.height / screenSize.width;
+	glview->setDesignResolutionSize(designSize.width, designSize.height, ResolutionPolicy::SHOW_ALL);
 #endif
 
 	Size frameSize = glview->getFrameSize();
-    
-    vector<string> searchPath;
 
-    // In this demo, we select resource according to the frame's height.
-    // If the resource size is different from design resolution size, you need to set contentScaleFactor.
-    // We use the ratio of resource's height to the height of design resolution,
-    // this can make sure that the resource's height could fit for the height of design resolution.
+	std::vector<std::string> searchPath;
 
-    // if the frame's height is larger than the height of medium resource size, select large resource.
-	if (frameSize.height > mediumResource.size.height)
-	{
-        searchPath.push_back(largeResource.directory);
+	// In this demo, we select resource according to the frame's height.
+	// If the resource size is different from design resolution size, you need to set contentScaleFactor.
+	// We use the ratio of resource's height to the height of design resolution,
+	// this can make sure that the resource's height could fit for the height of design resolution.
+	searchPath.push_back("res");
 
-        //director->setContentScaleFactor(MIN(largeResource.size.height/designResolutionSize.height, largeResource.size.width/designResolutionSize.width));
-	}
-    // if the frame's height is larger than the height of small resource size, select medium resource.
-    else if (frameSize.height > smallResource.size.height)
-    {
-        searchPath.push_back(mediumResource.directory);
-        
-        //director->setContentScaleFactor(MIN(mediumResource.size.height/designResolutionSize.height, mediumResource.size.width/designResolutionSize.width));
-    }
-    // if the frame's height is smaller than the height of medium resource size, select small resource.
-	else
-    {
-        searchPath.push_back(smallResource.directory);
-
-        //director->setContentScaleFactor(MIN(smallResource.size.height/designResolutionSize.height, smallResource.size.width/designResolutionSize.width));
-    }
-    
-    // set searching path
-    FileUtils::getInstance()->setSearchPaths(searchPath);
-	
+#if defined(ANDROID) || defined(LINUX)
+#if defined(LINUX)
+	printf("*** *** applicationDidFinishLaunching 003\n");
+#else
+	__android_log_print(ANDROID_LOG_ERROR, "AppDelegate.cpp", "%s", "*** *** applicationDidFinishLaunching 003");
+#endif
 #endif
 
+#if 0
+	std::string skinpath = GlobalConfigManager::GetInstance()->GetValue<std::string>("skin_path", "");
+	if (!skinpath.empty()) {
+		if (!FileUtils::getInstance()->isFileExist(skinpath)) {
+			GlobalConfigManager::GetInstance()->SetValue("skin_path", "");
+		} else {
 
+#if defined(ANDROID) || defined(LINUX)
 
-    // turn on display FPS
-    director->setDisplayStats(true);
+			throw;
+#elif !defined(_MSC_VER)
+			TVPAddAutoSearchArchive(skinpath);
+#else
+			__debugbreak(); throw;
+#endif
+		}
+	}
+#endif
 
-    // set FPS. the default value is 1.0/60 if you don't call this
-    director->setAnimationInterval(1.0 / 60);
+#if defined(ANDROID) || defined(LINUX)
+#if defined(LINUX)
+	printf("*** *** applicationDidFinishLaunching 004\n");
+#else
+	__android_log_print(ANDROID_LOG_ERROR, "AppDelegate.cpp", "%s", "*** *** applicationDidFinishLaunching 004");
+#endif
+#endif
 
-    // create a scene. it's an autorelease object
-    auto scene = HelloWorld::scene();
+	// set searching path
+	FileUtils::getInstance()->setSearchPaths(searchPath);
 
-    // run
-    director->runWithScene(scene);
+#if defined(ANDROID) || defined(LINUX)
+#if defined(LINUX)
+	printf("*** *** applicationDidFinishLaunching 004-1\n");
+#else
+	__android_log_print(ANDROID_LOG_ERROR, "AppDelegate.cpp", "%s", "*** *** applicationDidFinishLaunching 004-1");
+#endif
+#endif
 
-    return true;
+	// turn on display FPS
+	director->setDisplayStats(false);
+
+#if defined(ANDROID) || defined(LINUX)
+#if defined(LINUX)
+	printf("*** *** applicationDidFinishLaunching 004-2\n");
+#else
+	__android_log_print(ANDROID_LOG_ERROR, "AppDelegate.cpp", "%s", "*** *** applicationDidFinishLaunching 004-2");
+#endif
+#endif
+
+	// set FPS. the default value is 1.0/60 if you don't call this
+	director->setAnimationInterval(1.0 / 60);
+
+#if defined(ANDROID) || defined(LINUX)
+#if defined(LINUX)
+	printf("*** *** applicationDidFinishLaunching 004-3\n");
+#else
+	__android_log_print(ANDROID_LOG_ERROR, "AppDelegate.cpp", "%s", "*** *** applicationDidFinishLaunching 004-3");
+#endif
+#endif
+
+#if defined(ANDROID) || defined(LINUX)
+#if defined(LINUX)
+	printf("*** *** applicationDidFinishLaunching 004-4\n");
+#else
+	__android_log_print(ANDROID_LOG_ERROR, "AppDelegate.cpp", "%s", "*** *** applicationDidFinishLaunching 004-4");
+#endif
+#endif
+
+	// initialize something
+//	LocaleConfigManager::GetInstance()->Initialize(TVPGetCurrentLanguage());
+
+#if defined(ANDROID) || defined(LINUX)
+#if defined(LINUX)
+	printf("*** *** applicationDidFinishLaunching 004-5\n");
+#else
+	__android_log_print(ANDROID_LOG_ERROR, "AppDelegate.cpp", "%s", "*** *** applicationDidFinishLaunching 004-5");
+#endif
+#endif
+
+#if !USE_HELLO
+	// create a scene. it's an autorelease object
+	TVPMainScene *scene = TVPMainScene::CreateInstance();
+#else
+	auto scene = HelloWorld::scene();
+#endif
+
+#if defined(ANDROID) || defined(LINUX)
+#if defined(LINUX)
+	printf("*** *** applicationDidFinishLaunching 004-6\n");
+#else
+	__android_log_print(ANDROID_LOG_ERROR, "AppDelegate.cpp", "%s", "*** *** applicationDidFinishLaunching 004-6");
+#endif
+#endif
+
+	// run
+	director->runWithScene(scene);
+
+	//director->getConsole()->listenOnTCP(16006);
+
+#if defined(ANDROID) || defined(LINUX)
+#if defined(LINUX)
+	printf("*** *** applicationDidFinishLaunching 005\n");
+#else
+	__android_log_print(ANDROID_LOG_ERROR, "AppDelegate.cpp", "%s", "*** *** applicationDidFinishLaunching 005");
+#endif
+#endif
+
+#if !USE_HELLO
+	scene->scheduleOnce([](float dt){
+		TVPMainScene::GetInstance()->unschedule("launch");
+		TVPGlobalPreferenceForm::Initialize();
+		//if (!TVPCheckStartupArg())
+		{
+// 			std::string lastpath;
+// 			if (GlobalConfigManager::GetInstance()->GetValueBool("remember_last_path", true)) {
+// 				std::string lastpathfile = TVPGetInternalPreferencePath() + "lastpath.txt";
+// 				lastpath = FileUtils::getInstance()->getStringFromFile(lastpathfile);
+// 				if (!lastpath.empty() && TVPCheckExistentLocalFile(lastpath.c_str())) {
+// 					LocaleConfigManager *localeMgr = LocaleConfigManager::GetInstance();
+// #if 1
+// 					if (TVPShowSimpleMessageBoxYesNo(lastpath.c_str(), localeMgr->GetText("use_last_path")) == 0) {
+// 						if (TVPMainScene::GetInstance()->startupFrom(lastpath))
+// 							return;
+// 					} else {
+// 						remove(lastpathfile.c_str());
+// // 						FILE* fp = fopen(lastpathfile.c_str(), "wt");
+// // 						if (fp) { // clear last path file
+// // 							fclose(fp);
+// // 						}
+// 					}
+// #else
+// 					TVPMessageBoxForm::showYesNo(localeMgr->GetText("use_last_path"), lastpath,
+// 						[lastpath, lastpathfile](int n) {
+// 						if (n == 0) {
+// 							if (TVPMainScene::GetInstance()->startupFrom(lastpath));
+// 						} else {
+// 							TVPMainScene::GetInstance()->pushUIForm(TVPMainFileSelectorForm::create(lastpath));
+// 							FILE* fp = fopen(lastpathfile.c_str(), "wt");
+// 							if (fp) { // clear last path file
+// 								fclose(fp);
+// 							}
+// 						}
+// 					});
+// 					return;
+// #endif
+// 				}
+// 			}
+			TVPMainScene::GetInstance()->pushUIForm(TVPMainFileSelectorForm::create());
+		}
+	}, 0, "launch");
+#endif
+
+	return true;
 }
 
-// This function will be called when the app is inactive. When comes a phone call,it's be invoked too
-void AppDelegate::applicationDidEnterBackground() {
-    Director::getInstance()->stopAnimation();
-
-    // if you use SimpleAudioEngine, it must be pause
-    // SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
+void TVPAppDelegate::initGLContextAttrs() {
+	GLContextAttrs glContextAttrs = {
+		8, 8, 8, 8, 24, 8
+	};
+	GLView::setGLContextAttrs(glContextAttrs);
 }
 
-// this function will be called when the app is active again
-void AppDelegate::applicationWillEnterForeground() {
-    Director::getInstance()->startAnimation();
+void TVPAppDelegate::applicationScreenSizeChanged(int newWidth, int newHeight)
+{
+// 	auto director = Director::getInstance();
+// 	director->getOpenGLView()->setFrameSize(newWidth, newHeight);
+}
 
-    // if you use SimpleAudioEngine, it must resume here
-    // SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
+void TVPOpenPatchLibUrl() {
+	cocos2d::Application::getInstance()->openURL("https://zeas2.github.io/Kirikiroid2_patch/patch");
 }

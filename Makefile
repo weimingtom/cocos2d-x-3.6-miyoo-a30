@@ -120,6 +120,9 @@ CPPFLAGS += -Icocos/editor-support/cocostudio
 CPPFLAGS += -Icocos/editor-support/cocostudio/ActionTimeline
 CPPFLAGS += -Icocos/editor-support/cocostudio/WidgetReader
 
+CPPFLAGS += -Itests/cpp-empty-test/Classes
+CPPFLAGS += -Itests/cpp-empty-test/Classes/cocos2d
+
 #CPPFLAGS += -I/usr/include/webp
 #CPPFLAGS += -I/usr/include/i386-linux-gnu 
 #CPPFLAGS += -I/home/wmt/work_a30/staging_dir/target/usr/include/GLFW 
@@ -567,6 +570,22 @@ OBJS += extensions/GUI/CCScrollView/CCTableViewCell.o
 HELLOCPP_OBJS :=
 HELLOCPP_OBJS += tests/cpp-empty-test/Classes/AppDelegate.o
 HELLOCPP_OBJS += tests/cpp-empty-test/Classes/HelloWorldScene.o
+HELLOCPP_OBJS += tests/cpp-empty-test/Classes/cocos2d/MainScene.o
+HELLOCPP_OBJS += tests/cpp-empty-test/Classes/ui/BaseForm.o
+HELLOCPP_OBJS += tests/cpp-empty-test/Classes/ui/ConsoleWindow.o
+HELLOCPP_OBJS += tests/cpp-empty-test/Classes/ui/DebugViewLayerForm.o
+HELLOCPP_OBJS += tests/cpp-empty-test/Classes/ui/FileSelectorForm.o
+HELLOCPP_OBJS += tests/cpp-empty-test/Classes/ui/GameMainMenu.o
+HELLOCPP_OBJS += tests/cpp-empty-test/Classes/ui/GlobalPreferenceForm.o
+HELLOCPP_OBJS += tests/cpp-empty-test/Classes/ui/IndividualPreferenceForm.o
+HELLOCPP_OBJS += tests/cpp-empty-test/Classes/ui/InGameMenuForm.o
+HELLOCPP_OBJS += tests/cpp-empty-test/Classes/ui/MainFileSelectorForm.o
+HELLOCPP_OBJS += tests/cpp-empty-test/Classes/ui/MessageBox.o
+HELLOCPP_OBJS += tests/cpp-empty-test/Classes/ui/PreferenceForm.o
+HELLOCPP_OBJS += tests/cpp-empty-test/Classes/ui/SeletListForm.o
+HELLOCPP_OBJS += tests/cpp-empty-test/Classes/ui/SimpleMediaFilePlayer.o
+HELLOCPP_OBJS += tests/cpp-empty-test/Classes/ui/TipsHelpForm.o
+HELLOCPP_OBJS += tests/cpp-empty-test/Classes/ui/XP3RepackForm.o
 
 all : tests/cpp-empty-test/cpp-empty-test
 
