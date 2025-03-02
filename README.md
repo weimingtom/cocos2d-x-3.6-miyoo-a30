@@ -32,6 +32,7 @@ https://github.com/ScutGame/Client-source/tree/master
 guiForLua.rar  
 * cocos2d-x3.6 连连看完整源码   
 * Cocos2d-x 3.x 案例开发大全（第2版）    
+* https://github.com/yangosoft/cocos2d-x-arm-opengles  
 
 ## How to Build  
 * For PC, xubuntu 20.04 64bit  
