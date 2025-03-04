@@ -18,6 +18,10 @@ https://www.khronos.org/assets/uploads/books/openglr_es_20_programming_guide_sam
 * https://github.com/weimingtom/xiaozhi_playground/blob/master/qt4-nes_with_input/qt4-nes_v12_button_input_success.tar.gz  
 evtest tiny version, see qt4-nes_v12_button_input_success.tar.gz\qt4-nes\Qt\NesEmulateWindow.cpp  
 
+## TODO: implement input function, void GLViewImpl::pollEvents()
+* https://github.com/weimingtom/kirikiroid2-miyoo-a30/blob/master/cocos/platform/desktop/CCGLViewImpl-desktop.cpp#L903
+* https://github.com/yangosoft/cocos2d-x-arm-opengles/blob/master/platform/desktop/CCGLViewImpl-desktop.cpp#L826  
+
 ## TODO
 * https://github.com/CeZQ/dmgame   
 dmgame.rar  
