@@ -23,6 +23,8 @@ evtest tiny version, see qt4-nes_v12_button_input_success.tar.gz\qt4-nes\Qt\NesE
 * https://github.com/yangosoft/cocos2d-x-arm-opengles/blob/master/platform/desktop/CCGLViewImpl-desktop.cpp#L826  
 * NOTE, my kirikiroid2-miyoo-a30 code causes 2 windows. So please refer to PPSSPP's source, and reduce it to 1 window, and try to pass window handle to EGL/GLES2 initialization codes and functions      
 
+## TODO: disable kirikiroid2-miyoo-a30 debug code by default  
+
 ## TODO
 * https://github.com/CeZQ/dmgame   
 dmgame.rar  
