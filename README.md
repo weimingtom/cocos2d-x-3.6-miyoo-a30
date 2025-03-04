@@ -21,6 +21,7 @@ evtest tiny version, see qt4-nes_v12_button_input_success.tar.gz\qt4-nes\Qt\NesE
 ## TODO: implement input function, void GLViewImpl::pollEvents()
 * https://github.com/weimingtom/kirikiroid2-miyoo-a30/blob/master/cocos/platform/desktop/CCGLViewImpl-desktop.cpp#L903
 * https://github.com/yangosoft/cocos2d-x-arm-opengles/blob/master/platform/desktop/CCGLViewImpl-desktop.cpp#L826  
+* NOTE, my kirikiroid2-miyoo-a30 code causes 2 windows, refer to PPSSPP's source, reduce to 1 window, pass window handler to EGL/GLES2 initialization codes and functions    
 
 ## TODO
 * https://github.com/CeZQ/dmgame   
