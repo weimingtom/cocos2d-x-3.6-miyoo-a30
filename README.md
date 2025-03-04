@@ -11,8 +11,8 @@ https://www.khronos.org/assets/uploads/books/openglr_es_20_programming_guide_sam
 
 ## Original repo and readme.md
 * https://github.com/cocos2d/cocos2d-x/tree/cocos2d-x-3.6
-* https://github.com/weimingtom/cocos2d-x-3.6-miyoo-a30/blob/master/README_old.md
-* https://github.com/weimingtom/cocos2d-x-3.6-miyoo-a30/blob/master/README.cmake
+* https://github.com/cocos2d/cocos2d-x/blob/cocos2d-x-3.6/README.md
+* https://github.com/cocos2d/cocos2d-x/blob/cocos2d-x-3.6/README.cmake  
 
 ## TODO: Implement input function, do_capture  
 * https://github.com/weimingtom/xiaozhi_playground/blob/master/qt4-nes_with_input/qt4-nes_v12_button_input_success.tar.gz  
