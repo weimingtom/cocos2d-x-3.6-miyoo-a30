@@ -98,3 +98,9 @@ using std::isnan;
 * cmake min with csb: cocos2d-x-3.6_v3.1.tar.gz  
 * make min: cocos2d-x-3.6_v5.tar.gz  
 * GLES2 merge back to pc: cocos2d-x-3.6_v3.5_merge_back_pc.tar.gz    
+
+## Test GLES+X11 and GLES+NoX11
+* testgles_20241128.tar.gz
+* (not solved) OpenGL error 0x0506 CCRenderer
+* (not solved) GL_INVALID_FRAMEBUFFER_OPERATION
+* If run GLES+NoX11 code under X11, it will show: libEGL warning: DRI2 :failed to authenticate
