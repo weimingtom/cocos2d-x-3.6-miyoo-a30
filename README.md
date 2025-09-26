@@ -104,3 +104,11 @@ using std::isnan;
 * (not solved) OpenGL error 0x0506 CCRenderer
 * (not solved) GL_INVALID_FRAMEBUFFER_OPERATION
 * If run GLES+NoX11 code under X11, it will show: libEGL warning: DRI2 :failed to authenticate
+
+## Msys2 Ref  
+* cocos2d-x-3.6_msys2_v1_good.zip  
+* NOTE, some codes are not merged   
+
+## Macos Ref  
+* macos_build_out.zip  
+

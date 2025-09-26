@@ -761,6 +761,7 @@ std::string FileUtils::fullPathForFilename(const std::string &filename) const
     
     for (const auto& searchIt : _searchPathArray)
     {
+//CCLOG("cocos2d: searchIt : %s", searchIt.c_str());   			
         for (const auto& resolutionIt : _searchResolutionsOrderArray)
         {
             fullpath = this->getPathForFilename(newFilename, resolutionIt, searchIt);

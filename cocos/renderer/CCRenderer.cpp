@@ -339,6 +339,7 @@ void Renderer::setupVBOAndVAO()
 
 void Renderer::setupVBO()
 {
+//printf("glGenBuffers == %p\n", glGenBuffers); // __glewGenBuffers, need call glewInit
     glGenBuffers(2, &_buffersVBO[0]);
     glGenBuffers(2, &_quadbuffersVBO[0]);
     mapBuffers();

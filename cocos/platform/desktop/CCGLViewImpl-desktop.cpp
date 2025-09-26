@@ -39,7 +39,7 @@ THE SOFTWARE.
 #include "base/ccUtils.h"
 #include "base/ccUTF8.h"
 
-
+#if !defined(__MINGW32__)
 // <EGL/egl.h> exists since android 2.3
 #include <EGL/egl.h>
 PFNGLGENVERTEXARRAYSOESPROC glGenVertexArraysOESEXT = 0;
@@ -60,6 +60,7 @@ void initExtensions() {
  //   glUnmapBufferOES = (PFNGLUNMAPBUFFEROESPROC)eglGetProcAddress("glUnmapBufferOES");
  //   glGetBufferPointervOES = (PFNGLGETBUFFERPOINTERVOESPROC)eglGetProcAddress("glGetBufferPointervOES");
 }
+#endif
 
 
 NS_CC_BEGIN
@@ -307,7 +308,9 @@ GLViewImpl::GLViewImpl()
 , _mouseX(0.0f)
 , _mouseY(0.0f)
 {
+#if !defined(__MINGW32__)
 initExtensions();
+#endif
     _viewName = "cocos2dx";
 #if USE_NO_GLFW
 
@@ -1079,7 +1082,7 @@ static bool glew_dynamic_binding()
 // helper
 bool GLViewImpl::initGlew()
 {
-#if 0
+#if defined(__MINGW32__)
 #if (CC_TARGET_PLATFORM != CC_PLATFORM_MAC)
     GLenum GlewInitResult = glewInit();
     if (GLEW_OK != GlewInitResult)
