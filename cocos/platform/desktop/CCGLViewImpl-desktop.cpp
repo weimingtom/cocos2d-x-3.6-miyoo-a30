@@ -39,7 +39,8 @@ THE SOFTWARE.
 #include "base/ccUtils.h"
 #include "base/ccUTF8.h"
 
-#if !defined(__MINGW32__)
+//FIXME:???!defined(__MINGW32__)
+#if !defined(__MINGW32__) && !USE_GLEW
 // <EGL/egl.h> exists since android 2.3
 #include <EGL/egl.h>
 PFNGLGENVERTEXARRAYSOESPROC glGenVertexArraysOESEXT = 0;
@@ -308,7 +309,8 @@ GLViewImpl::GLViewImpl()
 , _mouseX(0.0f)
 , _mouseY(0.0f)
 {
-#if !defined(__MINGW32__)
+//FIXME:!defined(__MINGW32__)
+#if !defined(__MINGW32__) && !USE_GLEW
 initExtensions();
 #endif
     _viewName = "cocos2dx";
@@ -1082,7 +1084,7 @@ static bool glew_dynamic_binding()
 // helper
 bool GLViewImpl::initGlew()
 {
-#if defined(__MINGW32__)
+#if defined(__MINGW32__) || USE_GLEW
 #if (CC_TARGET_PLATFORM != CC_PLATFORM_MAC)
     GLenum GlewInitResult = glewInit();
     if (GLEW_OK != GlewInitResult)
