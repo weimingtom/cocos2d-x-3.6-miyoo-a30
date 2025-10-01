@@ -112,3 +112,9 @@ using std::isnan;
 ## Macos Ref  
 * macos_build_out.zip  
 * (TODO) remove !defined(_MSC_VER) && !defined(ANDROID) && !defined(LINUX) && !defined(__APPLE__), remove TVPGL_ASM_Test
+* (TODO) remove !defined( _MSC_VER) && !defined(LINUX) && !defined(__APPLE__)
+* (TODO) remove defined(_MSC_VER) || defined(ANDROID) || defined(LINUX) || defined(__APPLE__)
+* (TODO) remove defined(_MSC_VER) || defined(LINUX) || defined(__APPLE__), 4 places
+* (TODO, need to reopen and test) 0 //TODO, remove when macos
+* renderer/CCTextureAtlas.cpp, renderer/CCRenderer.cpp, defined(__APPLE__)
+* cocos2dx_1_v2.zip macos test code

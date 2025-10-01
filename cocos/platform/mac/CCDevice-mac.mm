@@ -69,7 +69,7 @@ static bool _initWithString(const char * text, Device::TextAlign align, const ch
 	do {
 		NSString * string  = [NSString stringWithUTF8String:text];
         NSString * fntName = [NSString stringWithUTF8String:fontName];
-        
+
         fntName = [[fntName lastPathComponent] stringByDeletingPathExtension];
 		
 		// font
@@ -86,7 +86,8 @@ static bool _initWithString(const char * text, Device::TextAlign align, const ch
 					weight:0
 					size:size];
 		}
-		CC_BREAK_IF(!font);
+
+        CC_BREAK_IF(!font);
 		
 		// color
 		NSColor* foregroundColor;
@@ -156,7 +157,7 @@ static bool _initWithString(const char * text, Device::TextAlign align, const ch
 		NSSize realDimensions = [stringWithAttributes size];
 		// Mac crashes if the width or height is 0
 		CC_BREAK_IF(realDimensions.width <= 0 || realDimensions.height <= 0);
-        
+
 		CGSize dimensions = CGSizeMake(info->width, info->height);
 		
         
@@ -220,6 +221,7 @@ static bool _initWithString(const char * text, Device::TextAlign align, const ch
 			info->hasAlpha = true;
 			info->isPremultipliedAlpha = true;
 			ret = true;
+NSLog(@"<<<<<<<CCDevice-mac.mm [string:%@], [font:%@] %p\n", string, fntName, font);
 		}
 		[bitmap release];
 		[image release];
@@ -237,12 +239,14 @@ Data Device::getTextureDataForText(const char * text, const FontDefinition& text
         
         if (! _initWithString(text, align, textDefinition._fontName.c_str(), textDefinition._fontSize, &info, &textDefinition._fontFillColor, textDefinition._fontAlpha))
         {
+NSLog(@"<<<<<<<CCDevice-mac.mm getTextureDataForText false");
             break;
         }
         height = (short)info.height;
         width = (short)info.width;
         ret.fastSet(info.data,width * height * 4);
         hasPremultipliedAlpha = true;
+NSLog(@"<<<<<<<CCDevice-mac.mm getTextureDataForText OK");
     } while (0);
     
     return ret;

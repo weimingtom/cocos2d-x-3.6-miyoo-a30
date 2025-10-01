@@ -188,6 +188,35 @@ info.NameForDisplay = "subWMTWMTfile004.txt";
 info.NameForCompare = "subWMTWMTfile004.txt";
 CurrentDirList.push_back(info);
 
+    info.NameForDisplay = "subWMTWMTfile001.txt";
+    info.NameForCompare = "subWMTWMTfile001.txt";
+    CurrentDirList.push_back(info);
+    info.NameForDisplay = "subWMTWMTfile002.txt";
+    info.NameForCompare = "subWMTWMTfile002.txt";
+    CurrentDirList.push_back(info);
+    info.NameForDisplay = "subWMTWMTfile003.txt";
+    info.NameForCompare = "subWMTWMTfile003.txt";
+    CurrentDirList.push_back(info);
+    info.NameForDisplay = "subWMTWMTfile004.txt";
+    info.NameForCompare = "subWMTWMTfile004.txt";
+    CurrentDirList.push_back(info);
+    
+    info.NameForDisplay = "subWMTWMTfile001.txt";
+    info.NameForCompare = "subWMTWMTfile001.txt";
+    CurrentDirList.push_back(info);
+    info.NameForDisplay = "subWMTWMTfile002.txt";
+    info.NameForCompare = "subWMTWMTfile002.txt";
+    CurrentDirList.push_back(info);
+    info.NameForDisplay = "subWMTWMTfile003.txt";
+    info.NameForCompare = "subWMTWMTfile003.txt";
+    CurrentDirList.push_back(info);
+    info.NameForDisplay = "subWMTWMTfile004.txt";
+    info.NameForCompare = "subWMTWMTfile004.txt";
+    CurrentDirList.push_back(info);
+    
+    
+    
+    
 	// fill fullpath
 	for (auto it = CurrentDirList.begin(); it != CurrentDirList.end(); ++it) {
 		it->FullPath = path + "/" + it->NameForDisplay;
@@ -328,7 +357,7 @@ void TVPBaseFileSelectorForm::onTitleClicked(cocos2d::Ref *owner) {
 	{
 		const auto& path = *p_path;
 		CSBReader reader;
-#if !defined( _MSC_VER) && !defined(LINUX)
+#if !defined(_MSC_VER) && !defined(LINUX) && !defined(__APPLE__)
 		Widget *cell = dynamic_cast<Widget*>(reader.Load("ui/ListItem.csb"));
 #else
 		Node *node = reader.Load("ui/ListItem.csb");
@@ -612,7 +641,7 @@ void TVPListForm::initFromInfo(const std::vector<cocos2d::ui::Widget*> &cells) {
 		Size size = cell->getContentSize();
 		size.width = width;
 		cell->setContentSize(size);
-#if defined(_MSC_VER) || defined(LINUX)
+#if defined(_MSC_VER) || defined(LINUX) || defined(__APPLE__)
 		Node *nodeChild = cell->getChildByName("_nodeChild");
 		nodeChild->setPositionX((width - nodeChild->getContentSize().width) / 2.0f);
 #endif
@@ -728,7 +757,7 @@ void TVPBaseFileSelectorForm::FileItemCellImpl::initFromFile(const char * filena
 	static const std::string str_highlight("highlight");
 	Widget *HighLight = static_cast<Widget *>(reader.findController<cocos2d::Node>(str_highlight));
 	if (HighLight) {
-#if defined(_MSC_VER) || defined(ANDROID) || defined(LINUX)
+#if defined(_MSC_VER) || defined(ANDROID) || defined(LINUX) || defined(__APPLE__)
 		//https://blog.csdn.net/iamlegendary/article/details/76977723
 		//\B9\F6\B6\AF\CE\CA\CC\E2
 		HighLight->setSwallowTouches(false);
@@ -753,7 +782,7 @@ void TVPBaseFileSelectorForm::FileItemCellImpl::initFromFile(const char * filena
 #endif
 				break;
 
-#if defined(_MSC_VER) || defined(LINUX)
+#if defined(_MSC_VER) || defined(LINUX) || defined(__APPLE__)
 			case Widget::TouchEventType::MOVED:
 #if defined(_MSC_VER)
 				OutputDebugString(L"===================>HighLight Widget::TouchEventType::MOVED\n");
@@ -767,7 +796,7 @@ void TVPBaseFileSelectorForm::FileItemCellImpl::initFromFile(const char * filena
 #endif
 
 			case Widget::TouchEventType::CANCELED:
-#if defined(_MSC_VER) || defined(LINUX)
+#if defined(_MSC_VER) || defined(LINUX) || defined(__APPLE__)
 #if defined(_MSC_VER)
 				OutputDebugString(L"===================>HighLight Widget::TouchEventType::CANCELED\n");
 #else
@@ -808,7 +837,7 @@ void TVPBaseFileSelectorForm::FileItemCellImpl::setInfo(int idx, const FileInfo 
 
 void TVPBaseFileSelectorForm::FileItemCellImpl::onClicked(cocos2d::Ref* p) {
 	Widget* sender = static_cast<Widget*>(p);
-#if defined(_MSC_VER) || defined(LINUX)
+#if defined(_MSC_VER) || defined(LINUX) || defined(__APPLE__)
 	if (sender->isHighlighted()) {
 		return;
 	}

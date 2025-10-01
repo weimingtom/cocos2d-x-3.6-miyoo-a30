@@ -127,7 +127,7 @@ bool TVPAppDelegate::applicationDidFinishLaunching() {
 #endif
 
 	// turn on display FPS
-	director->setDisplayStats(false);
+	director->setDisplayStats(true);
 
 #if defined(ANDROID) || defined(LINUX)
 #if defined(LINUX)

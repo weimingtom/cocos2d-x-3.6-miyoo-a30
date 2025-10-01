@@ -587,5 +587,8 @@ tests/cpp-empty-test/Resources/cpp-empty-test: cocos2dx.a $(HELLOCPP_OBJS)
 test:
 	./tests/cpp-empty-test/Resources/cpp-empty-test
 
+debug:
+	lldb ./tests/cpp-empty-test/Resources/cpp-empty-test
+
 clean :
 	$(RM) $(OBJS) $(HELLOCPP_OBJS) cocos2dx.a tests/cpp-empty-test/Resources/cpp-empty-test tests/cpp-empty-test/Resources/*.dSYM
