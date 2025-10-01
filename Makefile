@@ -615,7 +615,7 @@ cocos2dx.a : $(OBJS)
 	$(RANLIB) $@
 
 tests/cpp-empty-test/cpp-empty-test: cocos2dx.a $(HELLOCPP_OBJS)
-	$(CPP) tests/cpp-empty-test/proj.linux/main.cpp $(HELLOCPP_OBJS) cocos2dx.a -o $@ -Itests/cpp-empty-test/Classes $(CPPFLAGS) $(LDFLAGS)
+	$(CPP) $(CPPFLAGS2) $(CPPFLAGS) tests/cpp-empty-test/proj.linux/main.cpp $(HELLOCPP_OBJS) cocos2dx.a -o $@ -Itests/cpp-empty-test/Classes $(CPPFLAGS) $(LDFLAGS)
 
 %.o : %.cpp
 	$(CPP) $(CPPFLAGS2) $(CPPFLAGS) -o $@ -c $<

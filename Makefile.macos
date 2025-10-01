@@ -33,7 +33,6 @@ CPPFLAGS += -DCC_ENABLE_CHIPMUNK_INTEGRATION=1
 CPPFLAGS += -DCC_TARGET_OS_MAC 
 CPPFLAGS += -DCP_USE_CGPOINTS=0 
 CPPFLAGS += -DUSE_FILE32API 
-#CPPFLAGS += -fno-exceptions 
 #CPPFLAGS += -std=c++11 
 CPPFLAGS += -Wno-deprecated-declarations 
 #CPPFLAGS += -Wno-reorder 
@@ -58,8 +57,7 @@ CPPFLAGS += -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOS
 CPPFLAGS2 := 
 CPPFLAGS2 += -std=c++11 
 
-CPPFLAGS += -fno-exceptions 
-#CPPFLAGS += -fexceptions 
+CPPFLAGS += -fexceptions 
 
 CPPFLAGS += -Wno-deprecated-declarations 
 CPPFLAGS += -Wno-reorder 
@@ -85,12 +83,14 @@ CPPFLAGS += -Iexternal/unzip
 CPPFLAGS += -Iexternal/tinyxml2 
 CPPFLAGS += -Iexternal/xxhash 
 
+CPPFLAGS += -Itests/cpp-empty-test/Classes
+CPPFLAGS += -Itests/cpp-empty-test/Classes/cocos2d
+
 ###########
-#msys2 need windows path
-#CPPFLAGS += -Ic:/msys64/mingw64/include/
-#CPPFLAGS += -Ic:/msys64/mingw64/include/webp
-#CPPFLAGS += -Ic:/msys64/mingw64/include/freetype2     #/mingw64/include/freetype2
-#CPPFLAGS += -Ic:/msys64/mingw64/include/GLFW
+CPPFLAGS += -Iexternal_macos/include/
+CPPFLAGS += -Iexternal_macos/include/webp
+CPPFLAGS += -Iexternal_macos/include/freetype2
+CPPFLAGS += -Iexternal_macos/include/GLFW
 ###########
 
 LDFLAGS := 
@@ -120,23 +120,28 @@ LDFLAGS :=
 
 ###############
 #macos
-LDFLAGS += ../../lib/libcocos2d.a 
-LDFLAGS += ../../../external/curl/prebuilt/mac/libcrypto.a 
-LDFLAGS += ../../../external/curl/prebuilt/mac/libssl.a 
-LDFLAGS += ../../../external/curl/prebuilt/mac/libcurl.a 
-LDFLAGS += ../../../external/glfw3/prebuilt/mac/libglfw3.a 
-LDFLAGS += ../../../external/zlib/prebuilt/mac/libz.a 
-LDFLAGS += ../../lib/libunzip.a 
-LDFLAGS += ../../../external/jpeg/prebuilt/mac/libjpeg.a 
-LDFLAGS += ../../../external/png/prebuilt/mac/libpng.a 
-LDFLAGS += ../../../external/tiff/prebuilt/mac/libtiff.a 
-LDFLAGS += ../../lib/libtinyxml2.a 
-LDFLAGS += ../../../external/freetype2/prebuilt/mac/libfreetype.a 
-LDFLAGS += ../../../external/websockets/prebuilt/mac/libwebsockets.a 
-LDFLAGS += ../../../external/curl/prebuilt/mac/libcrypto.a 
-LDFLAGS += ../../../external/curl/prebuilt/mac/libssl.a 
-LDFLAGS += ../../../external/curl/prebuilt/mac/libcurl.a 
-LDFLAGS += ../../lib/libxxhash.a 
+#LDFLAGS += ../../lib/libcocos2d.a 
+#LDFLAGS += ../../../external/curl/prebuilt/mac/libcrypto.a 
+#LDFLAGS += ../../../external/curl/prebuilt/mac/libssl.a 
+#LDFLAGS += ../../../external/curl/prebuilt/mac/libcurl.a 
+#LDFLAGS += ../../../external/glfw3/prebuilt/mac/libglfw3.a
+LDFLAGS += external_macos/lib/libglfw3.a 
+#LDFLAGS += ../../../external/zlib/prebuilt/mac/libz.a 
+#LDFLAGS += ../../lib/libunzip.a 
+#LDFLAGS += ../../../external/jpeg/prebuilt/mac/libjpeg.a 
+LDFLAGS += external_macos/lib/libjpeg.a 
+#LDFLAGS += ../../../external/png/prebuilt/mac/libpng.a 
+LDFLAGS += external_macos/lib/libpng.a 
+#LDFLAGS += ../../../external/tiff/prebuilt/mac/libtiff.a 
+LDFLAGS += external_macos/lib/libtiff.a
+#LDFLAGS += ../../lib/libtinyxml2.a 
+#LDFLAGS += ../../../external/freetype2/prebuilt/mac/libfreetype.a 
+LDFLAGS += external_macos/lib/libfreetype.a
+#LDFLAGS += ../../../external/websockets/prebuilt/mac/libwebsockets.a 
+#LDFLAGS += ../../../external/curl/prebuilt/mac/libcrypto.a 
+#LDFLAGS += ../../../external/curl/prebuilt/mac/libssl.a 
+#LDFLAGS += ../../../external/curl/prebuilt/mac/libcurl.a 
+#LDFLAGS += ../../lib/libxxhash.a 
 LDFLAGS += -framework Cocoa 
 LDFLAGS += -framework AGL 
 LDFLAGS += -framework OpenGL 
@@ -146,8 +151,10 @@ LDFLAGS += -framework QuartzCore
 LDFLAGS += -framework ApplicationServices 
 LDFLAGS += -framework IOKit 
 LDFLAGS += -framework Foundation 
-LDFLAGS += ../../../external/webp/prebuilt/mac/libwebp.a 
-LDFLAGS += ../../../external/chipmunk/prebuilt/mac/libchipmunk.a 
+#LDFLAGS += ../../../external/webp/prebuilt/mac/libwebp.a 
+LDFLAGS += external_macos/lib/libwebp.a 
+#LDFLAGS += ../../../external/chipmunk/prebuilt/mac/libchipmunk.a 
+LDFLAGS += external_macos/lib/libz.a 
 #############
 
 OBJS := 
@@ -237,11 +244,12 @@ OBJS += cocos/platform/CCSAXParser.o
 OBJS += cocos/platform/CCThread.o
 OBJS += cocos/platform/CCImage.o
 
-OBJS += cocos/platform/win32/CCApplication-win32.o
-OBJS += cocos/platform/win32/CCCommon-win32.o
-OBJS += cocos/platform/win32/CCDevice-win32.o
-OBJS += cocos/platform/win32/CCFileUtils-win32.o
-OBJS += cocos/platform/win32/CCStdC-win32.o
+OBJS += cocos/platform/mac/CCApplication-mac.o
+OBJS += cocos/platform/mac/CCCommon-mac.o
+OBJS += cocos/platform/mac/CCDevice-mac.o
+OBJS += cocos/platform/apple/CCFileUtils-apple.o
+OBJS += cocos/platform/apple/CCLock-apple.o
+OBJS += cocos/platform/apple/CCThread-apple.o
 
 OBJS += cocos/platform/desktop/CCGLViewImpl-desktop.o
 
@@ -291,7 +299,10 @@ OBJS += cocos/base/CCScheduler.o
 OBJS += cocos/base/CCScriptSupport.o
 OBJS += cocos/base/CCTouch.o
 OBJS += cocos/base/CCUserDefault.o
+
 #OBJS += cocos/base/CCUserDefault-android.o
+OBJS += cocos/base/CCUserDefault-apple.o
+
 OBJS += cocos/base/CCValue.o
 OBJS += cocos/base/TGAlib.o
 OBJS += cocos/base/ZipUtils.o
@@ -365,9 +376,192 @@ OBJS += external/unzip/unzip.o
 #LDFLAGS += ../../lib/libxxhash.a 
 OBJS += external/xxhash/xxhash.o
 
+
+#ui
+OBJS += cocos/ui/UIWidget.o
+OBJS += cocos/ui/UILayout.o
+OBJS += cocos/ui/UILayoutParameter.o
+OBJS += cocos/ui/UILayoutManager.o
+OBJS += cocos/ui/CocosGUI.o
+OBJS += cocos/ui/UIHelper.o
+OBJS += cocos/ui/UIListView.o
+OBJS += cocos/ui/UIPageView.o
+OBJS += cocos/ui/UIScrollView.o
+OBJS += cocos/ui/UIButton.o
+OBJS += cocos/ui/UICheckBox.o
+OBJS += cocos/ui/UIImageView.o
+OBJS += cocos/ui/UIText.o
+OBJS += cocos/ui/UITextAtlas.o
+OBJS += cocos/ui/UITextBMFont.o
+OBJS += cocos/ui/UILoadingBar.o
+OBJS += cocos/ui/UISlider.o
+OBJS += cocos/ui/UITextField.o
+OBJS += cocos/ui/UIRichText.o
+OBJS += cocos/ui/UIHBox.o
+OBJS += cocos/ui/UIVBox.o
+OBJS += cocos/ui/UIRelativeBox.o
+OBJS += cocos/ui/UIVideoPlayer-android.o
+OBJS += cocos/ui/UIDeprecated.o
+OBJS += cocos/ui/UIScale9Sprite.o
+OBJS += cocos/ui/UIWebView.o
+OBJS += cocos/ui/UIWebViewImpl-android.o
+OBJS += cocos/ui/UIEditBox/UIEditBox.o
+OBJS += cocos/ui/UIEditBox/UIEditBoxImpl-android.o
+OBJS += cocos/ui/UILayoutComponent.o
+
+#cocosbuilder
+OBJS += cocos/editor-support/cocosbuilder/CCBAnimationManager.o
+OBJS += cocos/editor-support/cocosbuilder/CCBFileLoader.o
+OBJS += cocos/editor-support/cocosbuilder/CCBKeyframe.o
+OBJS += cocos/editor-support/cocosbuilder/CCBReader.o
+OBJS += cocos/editor-support/cocosbuilder/CCBSequence.o
+OBJS += cocos/editor-support/cocosbuilder/CCBSequenceProperty.o
+OBJS += cocos/editor-support/cocosbuilder/CCControlButtonLoader.o
+OBJS += cocos/editor-support/cocosbuilder/CCControlLoader.o
+OBJS += cocos/editor-support/cocosbuilder/CCLabelBMFontLoader.o
+OBJS += cocos/editor-support/cocosbuilder/CCLabelTTFLoader.o
+OBJS += cocos/editor-support/cocosbuilder/CCLayerColorLoader.o
+OBJS += cocos/editor-support/cocosbuilder/CCLayerGradientLoader.o
+OBJS += cocos/editor-support/cocosbuilder/CCLayerLoader.o
+OBJS += cocos/editor-support/cocosbuilder/CCMenuItemImageLoader.o
+OBJS += cocos/editor-support/cocosbuilder/CCMenuItemLoader.o
+OBJS += cocos/editor-support/cocosbuilder/CCNode+CCBRelativePositioning.o
+OBJS += cocos/editor-support/cocosbuilder/CCNodeLoader.o
+OBJS += cocos/editor-support/cocosbuilder/CCNodeLoaderLibrary.o
+OBJS += cocos/editor-support/cocosbuilder/CCParticleSystemQuadLoader.o
+OBJS += cocos/editor-support/cocosbuilder/CCScale9SpriteLoader.o
+OBJS += cocos/editor-support/cocosbuilder/CCScrollViewLoader.o
+OBJS += cocos/editor-support/cocosbuilder/CCSpriteLoader.o
+
+#cocosstudio
+OBJS += cocos/editor-support/cocostudio/CCActionFrame.o
+OBJS += cocos/editor-support/cocostudio/CCActionFrameEasing.o
+OBJS += cocos/editor-support/cocostudio/CCActionManagerEx.o
+OBJS += cocos/editor-support/cocostudio/CCActionNode.o
+OBJS += cocos/editor-support/cocostudio/CCActionObject.o
+OBJS += cocos/editor-support/cocostudio/CCArmature.o
+OBJS += cocos/editor-support/cocostudio/CCBone.o
+OBJS += cocos/editor-support/cocostudio/CCArmatureAnimation.o
+OBJS += cocos/editor-support/cocostudio/CCProcessBase.o
+OBJS += cocos/editor-support/cocostudio/CCTween.o
+OBJS += cocos/editor-support/cocostudio/CCDatas.o
+OBJS += cocos/editor-support/cocostudio/CCBatchNode.o
+OBJS += cocos/editor-support/cocostudio/CCDecorativeDisplay.o
+OBJS += cocos/editor-support/cocostudio/CCDisplayFactory.o
+OBJS += cocos/editor-support/cocostudio/CCDisplayManager.o
+OBJS += cocos/editor-support/cocostudio/CCSkin.o
+OBJS += cocos/editor-support/cocostudio/CCColliderDetector.o
+OBJS += cocos/editor-support/cocostudio/CCArmatureDataManager.o
+OBJS += cocos/editor-support/cocostudio/CCArmatureDefine.o
+OBJS += cocos/editor-support/cocostudio/CCDataReaderHelper.o
+OBJS += cocos/editor-support/cocostudio/CCSpriteFrameCacheHelper.o
+OBJS += cocos/editor-support/cocostudio/CCTransformHelp.o
+OBJS += cocos/editor-support/cocostudio/CCUtilMath.o
+OBJS += cocos/editor-support/cocostudio/CCComAttribute.o
+OBJS += cocos/editor-support/cocostudio/CCComAudio.o
+OBJS += cocos/editor-support/cocostudio/CCComController.o
+OBJS += cocos/editor-support/cocostudio/CCComRender.o
+OBJS += cocos/editor-support/cocostudio/CCInputDelegate.o
+OBJS += cocos/editor-support/cocostudio/DictionaryHelper.o
+OBJS += cocos/editor-support/cocostudio/CCSGUIReader.o
+OBJS += cocos/editor-support/cocostudio/CCSSceneReader.o
+OBJS += cocos/editor-support/cocostudio/TriggerBase.o
+OBJS += cocos/editor-support/cocostudio/TriggerMng.o
+OBJS += cocos/editor-support/cocostudio/TriggerObj.o
+OBJS += cocos/editor-support/cocostudio/CocoLoader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/NodeReader/NodeReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/SingleNodeReader/SingleNodeReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/SpriteReader/SpriteReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/ParticleReader/ParticleReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/GameMapReader/GameMapReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/ProjectNodeReader/ProjectNodeReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/ComAudioReader/ComAudioReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/WidgetReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/ButtonReader/ButtonReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/CheckBoxReader/CheckBoxReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/ImageViewReader/ImageViewReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/LayoutReader/LayoutReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/ListViewReader/ListViewReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/LoadingBarReader/LoadingBarReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/PageViewReader/PageViewReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/ScrollViewReader/ScrollViewReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/SliderReader/SliderReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/TextAtlasReader/TextAtlasReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/TextBMFontReader/TextBMFontReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/TextFieldReader/TextFieldReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/TextReader/TextReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/Node3DReader/Node3DReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/Sprite3DReader/Sprite3DReader.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/UserCameraReader/UserCameraReader.o
+OBJS += cocos/editor-support/cocostudio/ActionTimeline/CCActionTimelineCache.o
+OBJS += cocos/editor-support/cocostudio/ActionTimeline/CCFrame.o
+OBJS += cocos/editor-support/cocostudio/ActionTimeline/CCTimeLine.o
+OBJS += cocos/editor-support/cocostudio/ActionTimeline/CCActionTimeline.o
+OBJS += cocos/editor-support/cocostudio/ActionTimeline/CCActionTimelineNode.o
+OBJS += cocos/editor-support/cocostudio/ActionTimeline/CSLoader.o
+OBJS += cocos/editor-support/cocostudio/FlatBuffersSerialize.o
+OBJS += cocos/editor-support/cocostudio/WidgetCallBackHandlerProtocol.o
+OBJS += cocos/editor-support/cocostudio/WidgetReader/ArmatureNodeReader/ArmatureNodeReader.o
+OBJS += cocos/editor-support/cocostudio/CCObjectExtensionData.o
+OBJS += cocos/editor-support/cocostudio/CocoStudio.o
+
+#3d
+OBJS += cocos/3d/CCRay.o
+OBJS += cocos/3d/CCAABB.o
+OBJS += cocos/3d/CCOBB.o
+OBJS += cocos/3d/CCAnimate3D.o
+OBJS += cocos/3d/CCAnimation3D.o
+OBJS += cocos/3d/CCAttachNode.o
+OBJS += cocos/3d/CCBillBoard.o
+OBJS += cocos/3d/CCBundle3D.o
+OBJS += cocos/3d/CCBundleReader.o
+OBJS += cocos/3d/CCMesh.o
+OBJS += cocos/3d/CCMeshSkin.o
+OBJS += cocos/3d/CCMeshVertexIndexData.o
+OBJS += cocos/3d/CCSprite3DMaterial.o
+OBJS += cocos/3d/CCObjLoader.o
+OBJS += cocos/3d/CCSkeleton3D.o
+OBJS += cocos/3d/CCSprite3D.o
+OBJS += cocos/3d/CCTerrain.o
+OBJS += cocos/3d/CCSkybox.o
+OBJS += cocos/3d/CCTextureCube.o
+
+#extensions ScrollView
+OBJS += extensions/GUI/CCControlExtension/CCControl.o
+OBJS += extensions/GUI/CCControlExtension/CCControlButton.o
+OBJS += extensions/GUI/CCControlExtension/CCControlColourPicker.o
+OBJS += extensions/GUI/CCControlExtension/CCControlHuePicker.o
+OBJS += extensions/GUI/CCControlExtension/CCControlPotentiometer.o
+OBJS += extensions/GUI/CCControlExtension/CCControlSaturationBrightnessPicker.o
+OBJS += extensions/GUI/CCControlExtension/CCControlSlider.o
+OBJS += extensions/GUI/CCControlExtension/CCControlStepper.o
+OBJS += extensions/GUI/CCControlExtension/CCControlSwitch.o
+OBJS += extensions/GUI/CCControlExtension/CCControlUtils.o
+OBJS += extensions/GUI/CCControlExtension/CCInvocation.o
+OBJS += extensions/GUI/CCScrollView/CCScrollView.o
+OBJS += extensions/GUI/CCScrollView/CCTableView.o
+OBJS += extensions/GUI/CCScrollView/CCTableViewCell.o
+
+
 HELLOCPP_OBJS :=
 HELLOCPP_OBJS += tests/cpp-empty-test/Classes/AppDelegate.o
 HELLOCPP_OBJS += tests/cpp-empty-test/Classes/HelloWorldScene.o
+HELLOCPP_OBJS += tests/cpp-empty-test/Classes/cocos2d/MainScene.o
+HELLOCPP_OBJS += tests/cpp-empty-test/Classes/ui/BaseForm.o
+HELLOCPP_OBJS += tests/cpp-empty-test/Classes/ui/ConsoleWindow.o
+HELLOCPP_OBJS += tests/cpp-empty-test/Classes/ui/DebugViewLayerForm.o
+HELLOCPP_OBJS += tests/cpp-empty-test/Classes/ui/FileSelectorForm.o
+HELLOCPP_OBJS += tests/cpp-empty-test/Classes/ui/GameMainMenu.o
+HELLOCPP_OBJS += tests/cpp-empty-test/Classes/ui/GlobalPreferenceForm.o
+HELLOCPP_OBJS += tests/cpp-empty-test/Classes/ui/IndividualPreferenceForm.o
+HELLOCPP_OBJS += tests/cpp-empty-test/Classes/ui/InGameMenuForm.o
+HELLOCPP_OBJS += tests/cpp-empty-test/Classes/ui/MainFileSelectorForm.o
+HELLOCPP_OBJS += tests/cpp-empty-test/Classes/ui/MessageBox.o
+HELLOCPP_OBJS += tests/cpp-empty-test/Classes/ui/PreferenceForm.o
+HELLOCPP_OBJS += tests/cpp-empty-test/Classes/ui/SeletListForm.o
+HELLOCPP_OBJS += tests/cpp-empty-test/Classes/ui/SimpleMediaFilePlayer.o
+HELLOCPP_OBJS += tests/cpp-empty-test/Classes/ui/TipsHelpForm.o
+HELLOCPP_OBJS += tests/cpp-empty-test/Classes/ui/XP3RepackForm.o
 
 all : tests/cpp-empty-test/Resources/cpp-empty-test
 
@@ -376,12 +570,15 @@ cocos2dx.a : $(OBJS)
 	$(RANLIB) $@
 
 tests/cpp-empty-test/Resources/cpp-empty-test: cocos2dx.a $(HELLOCPP_OBJS)
-	$(CPP) tests/cpp-empty-test/proj.linux/main.cpp $(HELLOCPP_OBJS) cocos2dx.a -o $@ -Itests/cpp-empty-test/Classes $(CPPFLAGS) $(LDFLAGS)
+	$(CPP) $(CPPFLAGS2) $(CPPFLAGS) tests/cpp-empty-test/proj.linux/main.cpp $(HELLOCPP_OBJS) cocos2dx.a -o $@ -Itests/cpp-empty-test/Classes $(CPPFLAGS) $(LDFLAGS)
 
 %.o : %.cpp
 	$(CPP) $(CPPFLAGS2) $(CPPFLAGS) -o $@ -c $<
 
 %.o : %.cc
+	$(CPP) $(CPPFLAGS2) $(CPPFLAGS) -o $@ -c $<
+
+%.o : %.mm
 	$(CPP) $(CPPFLAGS2) $(CPPFLAGS) -o $@ -c $<
 
 %.o : %.c
@@ -391,4 +588,4 @@ test:
 	./tests/cpp-empty-test/Resources/cpp-empty-test
 
 clean :
-	$(RM) $(OBJS) $(HELLOCPP_OBJS) cocos2dx.a tests/cpp-empty-test/Resources/cpp-empty-test
+	$(RM) $(OBJS) $(HELLOCPP_OBJS) cocos2dx.a tests/cpp-empty-test/Resources/cpp-empty-test tests/cpp-empty-test/Resources/*.dSYM

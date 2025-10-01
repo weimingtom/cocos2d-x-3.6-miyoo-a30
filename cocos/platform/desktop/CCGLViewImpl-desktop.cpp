@@ -40,7 +40,7 @@ THE SOFTWARE.
 #include "base/ccUTF8.h"
 
 //FIXME:???!defined(__MINGW32__)
-#if !defined(__MINGW32__) && !USE_GLEW
+#if !defined(__MINGW32__) && !USE_GLEW && !defined(__APPLE__)
 // <EGL/egl.h> exists since android 2.3
 #include <EGL/egl.h>
 PFNGLGENVERTEXARRAYSOESPROC glGenVertexArraysOESEXT = 0;
@@ -310,7 +310,7 @@ GLViewImpl::GLViewImpl()
 , _mouseY(0.0f)
 {
 //FIXME:!defined(__MINGW32__)
-#if !defined(__MINGW32__) && !USE_GLEW
+#if !defined(__MINGW32__) && !USE_GLEW && !defined(__APPLE__)
 initExtensions();
 #endif
     _viewName = "cocos2dx";

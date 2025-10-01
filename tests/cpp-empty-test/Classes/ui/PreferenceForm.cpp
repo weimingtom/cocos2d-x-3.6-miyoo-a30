@@ -79,7 +79,7 @@ public:
 	void fireReleaseUpEvent() {
 		bool newstat = !_isSelected;
 		setSelected(newstat);
-#if !defined(_MSC_VER) && !defined(ANDROID) && !defined(LINUX)
+#if !defined(_MSC_VER) && !defined(ANDROID) && !defined(LINUX) && !defined(__APPLE__)
 		dispatchSelectChangedEvent(newstat);
 #else
 #if defined(_MSC_VER)

@@ -135,9 +135,9 @@ void TVPMainFileSelectorForm::show() {
 #if defined(_MSC_VER)
 	OutputDebugString(L"===============TVPMainFileSelectorForm::show()\n");
 #endif
-#ifdef _DEBUG
-	TVPGL_ASM_Test();
-#endif
+//#ifdef _DEBUG
+//	TVPGL_ASM_Test();
+//#endif
 #if !USE_HELLO_DESIGN_RES_3
 	ListHistory(); // filter history data
 #else
@@ -339,7 +339,7 @@ void TVPMainFileSelectorForm::showMenu(Ref*) {
 			});
 		}
 		reader.findWidget("btnRepack")->addClickEventListener([this](Ref*) {
-#if !defined(_MSC_VER) && !defined(ANDROID) && !defined(LINUX)
+#if !defined(_MSC_VER) && !defined(ANDROID) && !defined(LINUX) && !defined(__APPLE__)
 			TVPProcessXP3Repack(CurrentPath);
 #endif
 			hideMenu(nullptr);
@@ -421,7 +421,7 @@ void TVPMainFileSelectorForm::ListHistory()
 {
 	if (!_historyList) return;
 	_historyList->removeAllChildren();
-#if !defined(_MSC_VER) && !defined(ANDROID) && !defined(LINUX)
+#if !defined(_MSC_VER) && !defined(ANDROID) && !defined(LINUX) && !defined(__APPLE__)
 	HistoryCell *nullcell = new HistoryCell();
 	nullcell->init();
 #else
@@ -459,7 +459,7 @@ void TVPMainFileSelectorForm::ListHistory()
 			continue;
 		}
 	}
-#if !defined(_MSC_VER) && !defined(ANDROID) && !defined(LINUX)
+#if !defined(_MSC_VER) && !defined(ANDROID) && !defined(LINUX) && !defined(__APPLE__)
 	nullcell = new HistoryCell();
 	nullcell->init();
 #else
@@ -520,7 +520,7 @@ void TVPMainFileSelectorForm::HistoryCell::initInfo(const std::string &fullpath,
 	_file = static_cast<cocos2d::ui::Text*>(reader.findController<cocos2d::Node>("file"));
 	_panel_delete = reader.findController<cocos2d::Node>("panel_delete");
 	if (!_panel_delete) _panel_delete = _btn_delete;
-#if !defined(_MSC_VER) && !defined(ANDROID) && !defined(LINUX)
+#if !defined(_MSC_VER) && !defined(ANDROID) && !defined(LINUX) && !defined(__APPLE__)
 //FIXME:
 	_scrollview->setScrollBarEnabled(false);
 #else
