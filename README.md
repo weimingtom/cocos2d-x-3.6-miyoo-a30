@@ -118,3 +118,33 @@ using std::isnan;
 * (TODO, need to reopen and test) 0 //TODO, remove when macos
 * renderer/CCTextureAtlas.cpp, renderer/CCRenderer.cpp, defined(__APPLE__)
 * cocos2dx_1_v2.zip macos test code
+
+## About running on VisionFive2
+* Make sure tempture lower than 85 degree and using a CPU fan  
+see https://www.waveshare.net/wiki/VisionFive2  
+```
+上次说的visionfive2另外一个问题是u口容易失灵，
+不过我后来发现可能这不是visionfive2的硬件问题，
+而是它温度太高的时候可能会关掉一些功能（微雪文档说超过85度就会降频），
+所以最好用风扇吹着（我是拿树莓派4风扇接上去靠边的第2第3针脚）。
+不过即便如此有时候u口也会失灵，如果可以的话最好还是用
+lftp网线传而不是用u盘。所以这个visionfive2还不是很适合用于
+一些对稳定要求很高的场景，用来玩倒是没太大问题
+```
+* How to Use Hardware GPU accelerated GL_RENDERER, instead of softpipe MESA software OpenGLES
+[1] First, use -lGLESv2_PVR_MESA instead of -lGLESv2
+[2] Second, use cmake build static library libglfw3.a instead of apt install libglfw3-dev
+[3] Third, use GLFW_OPENGL_ES_API
+See SDL_VIDEO_GL_DRIVER='GLESv2_PVR_MESA', see https://forum.rvspace.org/t/play-psp-games-on-visionfive-2/3525
+```
+visionfive2的opengl卡顿问题我似乎找到方法解决了，
+效果如下，GL_RENDERER显示不是softpipe而是PowerVR B-Series BXE-4-32。
+如何用硬件GPU而避免softpipe软件实现的OpenGLES呢？很多人都没说，
+我只能在PPSSPP移植到visionfive2的作者那里找到头绪：
+
+（1）链接到动态库-lGLESv2_PVR_MESA而不是-lGLESv2，至于-lEGL不用变
+（2）glfw3，以及其他和GLES有关的库最好自己编译成静态库，不要用apt install的库，
+避免链接到软件实现mesa动态库
+（3）代码里面要明确使用opengles而不是opengl，
+例如使用glfw3时要加上GLFW_OPENGL_ES_API这个hint，否则窗口返回空
+```
