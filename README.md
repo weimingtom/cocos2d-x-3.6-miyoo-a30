@@ -150,3 +150,4 @@ visionfive2的opengl卡顿问题我似乎找到方法解决了，
 ```
 * cocos2d-x-3.6-miyoo-a30_vf2_v2_hw_gles.tar.gz
 * **FIXME**: -g0 -O3 link failed
+* (**TODO**) Use which firmware
