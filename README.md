@@ -148,3 +148,4 @@ visionfive2的opengl卡顿问题我似乎找到方法解决了，
 （3）代码里面要明确使用opengles而不是opengl，
 例如使用glfw3时要加上GLFW_OPENGL_ES_API这个hint，否则窗口返回空
 ```
+* cocos2d-x-3.6-miyoo-a30_vf2_v2_hw_gles.tar.gz
