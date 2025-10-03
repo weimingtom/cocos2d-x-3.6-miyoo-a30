@@ -121,7 +121,7 @@ using std::isnan;
 
 ## About running on VisionFive2
 * Make sure tempture lower than 85 degree and using a CPU fan  
-see https://www.waveshare.net/wiki/VisionFive2  
+* see https://www.waveshare.net/wiki/VisionFive2  
 ```
 上次说的visionfive2另外一个问题是u口容易失灵，
 不过我后来发现可能这不是visionfive2的硬件问题，
@@ -131,11 +131,11 @@ see https://www.waveshare.net/wiki/VisionFive2
 lftp网线传而不是用u盘。所以这个visionfive2还不是很适合用于
 一些对稳定要求很高的场景，用来玩倒是没太大问题
 ```
-* How to Use Hardware GPU accelerated GL_RENDERER, instead of softpipe MESA software OpenGLES
-[1] First, use -lGLESv2_PVR_MESA instead of -lGLESv2
-[2] Second, use cmake build static library libglfw3.a instead of apt install libglfw3-dev
-[3] Third, use GLFW_OPENGL_ES_API
-See SDL_VIDEO_GL_DRIVER='GLESv2_PVR_MESA', see https://forum.rvspace.org/t/play-psp-games-on-visionfive-2/3525
+* How to Use Hardware GPU accelerated GL_RENDERER, instead of softpipe MESA software OpenGLES  
+* [1] First, use -lGLESv2_PVR_MESA instead of -lGLESv2  
+* [2] Second, use cmake build static library libglfw3.a instead of apt install libglfw3-dev  
+* [3] Third, use GLFW_OPENGL_ES_API  
+* See SDL_VIDEO_GL_DRIVER='GLESv2_PVR_MESA', see https://forum.rvspace.org/t/play-psp-games-on-visionfive-2/3525  
 ```
 visionfive2的opengl卡顿问题我似乎找到方法解决了，
 效果如下，GL_RENDERER显示不是softpipe而是PowerVR B-Series BXE-4-32。
