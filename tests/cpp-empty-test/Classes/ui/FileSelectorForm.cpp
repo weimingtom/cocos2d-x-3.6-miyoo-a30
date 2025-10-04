@@ -48,6 +48,9 @@ static bool IsPathExist(const std::string &path) {
 std::pair<std::string, std::string> TVPBaseFileSelectorForm::PathSplit(const std::string &path) {
 	std::pair<std::string, std::string> ret;
 	if (path.size() <= 1) {
+#if CC_PLATFORM_WIN32 != CC_TARGET_PLATFORM && CC_PLATFORM_WINRT != CC_TARGET_PLATFORM && CC_PLATFORM_WP8 != CC_TARGET_PLATFORM
+	if (ret.first.empty()) ret.first = "/"; // posix root //FIXME: added, fix title button empty bug
+#endif	
 		ret.second = path;
 		return ret;
 	}
@@ -76,6 +79,9 @@ std::pair<std::string, std::string> TVPBaseFileSelectorForm::PathSplit(const std
 			break;
 		}
 	}
+#if CC_PLATFORM_WIN32 != CC_TARGET_PLATFORM && CC_PLATFORM_WINRT != CC_TARGET_PLATFORM && CC_PLATFORM_WP8 != CC_TARGET_PLATFORM
+	if (ret.first.empty()) ret.first = "/"; // posix root //FIXME: added, fix title button empty bug
+#endif		
 	ret.second = path;
 	return ret;
 }
@@ -138,6 +144,7 @@ static const std::string str_diricon("dir_icon");
 static const std::string str_select("select_check");
 static const std::string str_filename("filename");
 void TVPBaseFileSelectorForm::ListDir(std::string path) {
+printf("<<<<<<<< TVPBaseFileSelectorForm::ListDir path == %s\n", path.c_str());
 	std::pair<std::string, std::string> split_path = PathSplit(path);
 	ParentPath = split_path.first;
 	if (_title) {
@@ -147,9 +154,18 @@ void TVPBaseFileSelectorForm::ListDir(std::string path) {
 		if (!split_path.second.empty() && (split_path.second.back() == '/' || split_path.second.back() == '\\')) {
 			split_path.second.pop_back();
 		}
+#else
+//FIXME: added, for linux, /home->home
+		if (!split_path.second.empty() && (split_path.second.front() == '/')) {
+			split_path.second.erase(0, 1);
+		}
 #endif
-		_title->setTitleText(split_path.second);
-
+    	if (path == "/") {
+    		_title->setTitleText("/"); //FIXME: don't display empty title button //FIXME: not test / in msys2
+        } else {
+        	_title->setTitleText(split_path.second);
+        }
+printf("<<<<<<<< TVPBaseFileSelectorForm::ListDir setTitleText == %s\n", split_path.second.c_str());
 		Size dispSize = _title->getTitleRenderer()->getContentSize();
 		Size realSize = _title->getContentSize();
 		if (dispSize.width > realSize.width) {
@@ -357,10 +373,22 @@ void TVPBaseFileSelectorForm::onTitleClicked(cocos2d::Ref *owner) {
 	{
 		const auto& path = *p_path;
 		CSBReader reader;
-#if !defined(_MSC_VER) && !defined(LINUX) && !defined(__APPLE__)
+#if !defined(_MSC_VER) && !defined(LINUX) && !defined(__APPLE__) && !defined(ANDROID)
 		Widget *cell = dynamic_cast<Widget*>(reader.Load("ui/ListItem.csb"));
 #else
 		Node *node = reader.Load("ui/ListItem.csb");
+
+#if 1
+	float scale = TVPMainScene::GetInstance()->getUIScale();
+	cocos2d::Size sceneSize =
+	TVPMainScene::GetInstance()->getUINodeSize() / scale;
+	sceneSize.width *= 0.8f;
+	sceneSize.height *= 0.8f;	
+
+	Size size1 = node->getContentSize();
+	size1.width = sceneSize.width; //FIXME: added, title button pop list width
+	node->setContentSize(size1);
+#endif   
 		Widget *cell = Widget::create();
 		LinearLayoutParameter* lp1 = LinearLayoutParameter::create();
 		//lp1->setMargin(Margin(0, 10, 0, 10));
@@ -371,6 +399,11 @@ void TVPBaseFileSelectorForm::onTitleClicked(cocos2d::Ref *owner) {
 		cell->setContentSize(node->getContentSize());
 #endif
 		Button *item = dynamic_cast<Button*>(reader.findController<cocos2d::Node>("item"));
+#if 1
+	Size size2 = item->getContentSize();
+	size2.width = sceneSize.width; //FIXME: added, title button pop list width
+	item->setContentSize(size2);
+#endif        
 		item->setCallbackName(path);
 		item->setTitleText(path);
 		item->addClickEventListener(func);
@@ -398,6 +431,7 @@ void TVPBaseFileSelectorForm::onTitleClicked(cocos2d::Ref *owner) {
 }
 
 void TVPBaseFileSelectorForm::onBackClicked(cocos2d::Ref *owner) {
+printf("<<<<<<<<<TVPBaseFileSelectorForm::onBackClicked()\n");
 	ListDir(ParentPath);
 }
 
@@ -759,7 +793,7 @@ void TVPBaseFileSelectorForm::FileItemCellImpl::initFromFile(const char * filena
 	if (HighLight) {
 #if defined(_MSC_VER) || defined(ANDROID) || defined(LINUX) || defined(__APPLE__)
 		//https://blog.csdn.net/iamlegendary/article/details/76977723
-		//Scroll problem
+		//scroll problem
 		HighLight->setSwallowTouches(false);
 #endif
 		HighLight->addClickEventListener(std::bind(&FileItemCellImpl::onClicked, this, std::placeholders::_1));

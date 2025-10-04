@@ -85,6 +85,9 @@ public:
 #if defined(_MSC_VER)
 		OutputDebugString(L"===============HackCheckBox fireReleaseUpEvent\n");
 		//__debugbreak(); throw;
+#elif defined(LINUX)
+		selectedEvent();
+		fprintf(stderr, "===============HackCheckBox fireReleaseUpEvent\n");
 #elif defined(ANDROID)
 		throw;
 #endif
