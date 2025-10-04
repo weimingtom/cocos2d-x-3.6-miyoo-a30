@@ -759,7 +759,7 @@ void TVPBaseFileSelectorForm::FileItemCellImpl::initFromFile(const char * filena
 	if (HighLight) {
 #if defined(_MSC_VER) || defined(ANDROID) || defined(LINUX) || defined(__APPLE__)
 		//https://blog.csdn.net/iamlegendary/article/details/76977723
-		//\B9\F6\B6\AF\CE\CA\CC\E2
+		//Scroll problem
 		HighLight->setSwallowTouches(false);
 #endif
 		HighLight->addClickEventListener(std::bind(&FileItemCellImpl::onClicked, this, std::placeholders::_1));
@@ -783,6 +783,7 @@ void TVPBaseFileSelectorForm::FileItemCellImpl::initFromFile(const char * filena
 				break;
 
 #if defined(_MSC_VER) || defined(LINUX) || defined(__APPLE__)
+//scroll problem
 			case Widget::TouchEventType::MOVED:
 #if defined(_MSC_VER)
 				OutputDebugString(L"===================>HighLight Widget::TouchEventType::MOVED\n");
@@ -797,6 +798,7 @@ void TVPBaseFileSelectorForm::FileItemCellImpl::initFromFile(const char * filena
 
 			case Widget::TouchEventType::CANCELED:
 #if defined(_MSC_VER) || defined(LINUX) || defined(__APPLE__)
+//scroll problem
 #if defined(_MSC_VER)
 				OutputDebugString(L"===================>HighLight Widget::TouchEventType::CANCELED\n");
 #else
@@ -838,6 +840,7 @@ void TVPBaseFileSelectorForm::FileItemCellImpl::setInfo(int idx, const FileInfo 
 void TVPBaseFileSelectorForm::FileItemCellImpl::onClicked(cocos2d::Ref* p) {
 	Widget* sender = static_cast<Widget*>(p);
 #if defined(_MSC_VER) || defined(LINUX) || defined(__APPLE__)
+//scroll problem
 	if (sender->isHighlighted()) {
 		return;
 	}

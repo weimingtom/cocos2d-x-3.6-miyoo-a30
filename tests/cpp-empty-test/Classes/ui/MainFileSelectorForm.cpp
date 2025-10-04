@@ -302,17 +302,17 @@ void TVPMainFileSelectorForm::showMenu(Ref*) {
 
 		// button events
 		reader.findWidget("btnRotate")->addClickEventListener([](Ref*) {
-#if 0 //TODO, remove when macos
+#if !defined(__APPLE__) //TODO, remove when macos
 			TVPMainScene::GetInstance()->pushUIForm(TVPGlobalPreferenceForm::create());
 #endif
 		});
 		reader.findWidget("btnGlobalPref")->addClickEventListener([](Ref*) {
-#if 0 //TODO, remove when macos
+#if !defined(__APPLE__) //TODO, remove when macos
 			TVPMainScene::GetInstance()->pushUIForm(TVPGlobalPreferenceForm::create());
 #endif
 		});
 		reader.findWidget("btnNewLocalPref")->addClickEventListener([this](Ref*) {
-#if 0 //TODO, remove when macos
+#if !defined(__APPLE__) //TODO, remove when macos
             if (1) { //IndividualConfigManager::GetInstance()->CreatePreferenceAt(CurrentPath)) {
 				TVPMainScene::GetInstance()->pushUIForm(IndividualPreferenceForm::create());
 				hideMenu(nullptr);
@@ -320,7 +320,7 @@ void TVPMainFileSelectorForm::showMenu(Ref*) {
 #endif
 		});
 		reader.findWidget("btnLocalPref")->addClickEventListener([this](Ref*) {
-#if 0 //TODO, remove when macos
+#if !defined(__APPLE__) //TODO, remove when macos
 			onShowPreferenceConfigAt(CurrentPath);
 #endif
 		});

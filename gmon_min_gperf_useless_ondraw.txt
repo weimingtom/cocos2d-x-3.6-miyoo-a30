@@ -1,0 +1,47 @@
+*CCRender::flush slow
+*void LayerColor::onDraw(const Mat4& transform, uint32_t flags)
+blendFunc slow
+
+
+
+#0  cocos2d::LayerColor::onDraw (this=0x2aad07dc40, transform=..., flags=3)
+    at cocos/2d/CCLayer.cpp:595
+#1  0x0000002aaabf108e in std::__invoke_impl<void, void (cocos2d::LayerColor::*&)(cocos2d::Mat4 const&, unsigned int), cocos2d::LayerColor*&, cocos2d::Mat4&, unsigned int&> (
+    __f=@0x2aad0a7130: (void (cocos2d::LayerColor::*)(cocos2d::LayerColor * const, const cocos2d::Mat4 &, unsigned int)) 0x2aaabea0ae <cocos2d::LayerColor::onDraw(cocos2d::Mat4 const&, unsigned int)>, __t=@0x2aad0a7188: 0x2aad07dc40)
+    at /usr/include/c++/12/bits/invoke.h:74
+#2  0x0000002aaabf0b0c in std::__invoke<void (cocos2d::LayerColor::*&)(cocos2d::Mat4 const&, unsigned int), cocos2d::LayerColor*&, cocos2d::Mat4&, unsigned int&> (
+    __fn=@0x2aad0a7130: (void (cocos2d::LayerColor::*)(cocos2d::LayerColor * const, const cocos2d::Mat4 &, unsigned int)) 0x2aaabea0ae <cocos2d::LayerColor::onDraw(cocos2d::Mat4 const&, unsigned int)>) at /usr/include/c++/12/bits/invoke.h:96
+#3  0x0000002aaabf0550 in std::_Bind<void (cocos2d::LayerColor::*(cocos2d::LayerColor*, cocos2d::Mat4, unsigned int))(cocos2d::Mat4 const&, unsigned int)>::__call<void, , 0ul, 1ul, 2ul>(std::tuple<>&&, std::_Index_tuple<0ul, 1ul, 2ul>) (
+    this=0x2aad0a7130, __args=...) at /usr/include/c++/12/functional:484
+#4  0x0000002aaabefe12 in std::_Bind<void (cocos2d::LayerColor::*(cocos2d::LayerColor*, cocos2d::Mat4, unsigned int))(cocos2d::Mat4 const&, unsigned int)>::operator()<, void>() (this=0x2aad0a7130) at /usr/include/c++/12/functional:567
+#5  0x0000002aaabef7fa in std::__invoke_impl<void, std::_Bind<void (cocos2d::Lay--Type <RET> for more, q to quit, c to continue without paging--
+erColor::*(cocos2d::LayerColor*, cocos2d::Mat4, unsigned int))(cocos2d::Mat4 const&, unsigned int)>&>(std::__invoke_other, std::_Bind<void (cocos2d::LayerColor::*(cocos2d::LayerColor*, cocos2d::Mat4, unsigned int))(cocos2d::Mat4 const&, unsigned int)>&) (__f=...) at /usr/include/c++/12/bits/invoke.h:61
+#6  0x0000002aaabeee04 in std::__invoke_r<void, std::_Bind<void (cocos2d::LayerColor::*(cocos2d::LayerColor*, cocos2d::Mat4, unsigned int))(cocos2d::Mat4 const&, unsigned int)>&>(std::_Bind<void (cocos2d::LayerColor::*(cocos2d::LayerColor*, cocos2d::Mat4, unsigned int))(cocos2d::Mat4 const&, unsigned int)>&) (
+    __fn=...) at /usr/include/c++/12/bits/invoke.h:154
+#7  0x0000002aaabedf10 in std::_Function_handler<void (), std::_Bind<void (cocos2d::LayerColor::*(cocos2d::LayerColor*, cocos2d::Mat4, unsigned int))(cocos2d::Mat4 const&, unsigned int)> >::_M_invoke(std::_Any_data const&) (__functor=...)
+    at /usr/include/c++/12/bits/std_function.h:290
+#8  0x0000002aaabcc3c4 in std::function<void ()>::operator()() const (
+    this=0x2aad07dfd0) at /usr/include/c++/12/bits/std_function.h:591
+#9  0x0000002aaacbc1e2 in cocos2d::CustomCommand::execute (this=0x2aad07dfb8)
+    at cocos/renderer/CCCustomCommand.cpp:54
+#10 0x0000002aaacd3c50 in cocos2d::Renderer::processRenderCommand (
+    this=0x3ff7516010, command=0x2aad07dfb8)
+    at cocos/renderer/CCRenderer.cpp:519
+
+#11 0x0000002aaacd405e in cocos2d::Renderer::visitRenderQueue (
+    this=0x3ff7516010, queue=...) at cocos/renderer/CCRenderer.cpp:634
+#12 0x0000002aaacd4244 in cocos2d::Renderer::render (this=0x3ff7516010)
+--Type <RET> for more, q to quit, c to continue without paging--
+    at cocos/renderer/CCRenderer.cpp:678
+#13 0x0000002aaac2042a in cocos2d::Scene::render (this=0x2aab28e140, 
+    renderer=0x3ff7516010) at cocos/2d/CCScene.cpp:168
+
+#14 0x0000002aaac6d47a in cocos2d::Director::drawScene (this=0x2aab1985a0)
+    at cocos/base/CCDirector.cpp:299
+#15 0x0000002aaac70632 in cocos2d::DisplayLinkDirector::mainLoop (
+    this=0x2aab1985a0) at cocos/base/CCDirector.cpp:1380
+#16 0x0000002aaac41596 in cocos2d::Application::run (this=0x3ffffff380)
+    at cocos/platform/linux/CCApplication-linux.cpp:86
+#17 0x0000002aaab696f2 in main (argc=1, argv=0x3ffffff558)
+    at tests/cpp-empty-test/proj.linux/main.cpp:27
+

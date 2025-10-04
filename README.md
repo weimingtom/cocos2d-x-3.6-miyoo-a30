@@ -116,6 +116,7 @@ using std::isnan;
 * (TODO) remove defined(_MSC_VER) || defined(ANDROID) || defined(LINUX) || defined(__APPLE__)
 * (TODO) remove defined(_MSC_VER) || defined(LINUX) || defined(__APPLE__), 4 places
 * (TODO, need to reopen and test) 0 //TODO, remove when macos
+* see upper, !defined(__APPLE__) //TODO, remove when macos
 * renderer/CCTextureAtlas.cpp, renderer/CCRenderer.cpp, defined(__APPLE__)
 * cocos2dx_1_v2.zip macos test code
 
@@ -151,3 +152,13 @@ visionfive2的opengl卡顿问题我似乎找到方法解决了，
 * cocos2d-x-3.6-miyoo-a30_vf2_v2_hw_gles.tar.gz
 * **FIXME**: -g0 -O3 link failed
 * (**TODO**) Use which firmware
+* glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
+* glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+* glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+* DMY_USE_GLES_GLFW3
+* You can use strace to test GL_RENDERER=softpipe problem (should load libGLESv2_PVR_MESA.so instead of libGLESv2.so), or to analyze PPSSPP visionfive2 port building
+
+## About building GLEW+GLFW PC version, just for MIYOO=0 
+* see USEGLEW
+* make USEGLEW=1 clean
+* make USEGLEW=1 -j8
