@@ -27,6 +27,10 @@ THE SOFTWARE.
 #define __BASE_CC_PLATFORM_CONFIG_H__
 /// @cond DO_NOT_SHOW
 
+#ifdef _MSC_VER
+#pragma warning(disable:4482)
+#endif
+
 /**
   Config of cocos2d-x project, per target platform.
   
@@ -154,6 +158,7 @@ THE SOFTWARE.
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 #ifndef __MINGW32__
 #pragma warning (disable:4127) 
+#pragma warning (disable:4503)
 #endif 
 #endif  // CC_PLATFORM_WIN32
 

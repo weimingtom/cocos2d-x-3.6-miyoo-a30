@@ -76,6 +76,9 @@ public:
     
     AllocatorMutex()
     {
+#if defined(ANDROID)
+		__android_log_print(ANDROID_LOG_ERROR, "CCAllocatorMutex.h", "%s", "*** *** AllocatorMutex");
+#endif
         MUTEX_INIT(_mutex);
     }
     

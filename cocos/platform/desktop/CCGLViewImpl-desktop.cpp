@@ -26,7 +26,9 @@ THE SOFTWARE.
 #include "CCGLViewImpl-desktop.h"
 
 #include <stdlib.h>
+#if !defined(_MSC_VER)
 #include <unistd.h>
+#endif
 #include <unordered_map>
 
 #include "platform/CCApplication.h"
@@ -38,6 +40,136 @@ THE SOFTWARE.
 #include "base/CCIMEDispatcher.h"
 #include "base/ccUtils.h"
 #include "base/ccUTF8.h"
+
+#define USE_SDL2 0
+#if USE_SDL2
+//SDL2, see SDL2/test/checkkeys.c and SDL2/test/loopwave.c
+#include <SDL2/SDL.h>
+SDL_Window *window;
+int done;
+
+/* Call this instead of exit(), so we can clean up SDL: atexit() is evil. */
+static void
+quit(int rc)
+{
+    SDL_Quit();
+    exit(rc);
+}
+
+static void
+print_string(char **text, size_t *maxlen, const char *fmt, ...)
+{
+    int len;
+    va_list ap;
+
+    va_start(ap, fmt);
+    len = SDL_vsnprintf(*text, *maxlen, fmt, ap);
+    if (len > 0) {
+        *text += len;
+        if ( ((size_t) len) < *maxlen ) {
+            *maxlen -= (size_t) len;
+        } else {
+            *maxlen = 0;
+        }
+    }
+    va_end(ap);
+}
+
+static void
+print_modifiers(char **text, size_t *maxlen)
+{
+    int mod;
+    print_string(text, maxlen, " modifiers:");
+    mod = SDL_GetModState();
+    if (!mod) {
+        print_string(text, maxlen, " (none)");
+        return;
+    }
+    if (mod & KMOD_LSHIFT)
+        print_string(text, maxlen, " LSHIFT");
+    if (mod & KMOD_RSHIFT)
+        print_string(text, maxlen, " RSHIFT");
+    if (mod & KMOD_LCTRL)
+        print_string(text, maxlen, " LCTRL");
+    if (mod & KMOD_RCTRL)
+        print_string(text, maxlen, " RCTRL");
+    if (mod & KMOD_LALT)
+        print_string(text, maxlen, " LALT");
+    if (mod & KMOD_RALT)
+        print_string(text, maxlen, " RALT");
+    if (mod & KMOD_LGUI)
+        print_string(text, maxlen, " LGUI");
+    if (mod & KMOD_RGUI)
+        print_string(text, maxlen, " RGUI");
+    if (mod & KMOD_NUM)
+        print_string(text, maxlen, " NUM");
+    if (mod & KMOD_CAPS)
+        print_string(text, maxlen, " CAPS");
+    if (mod & KMOD_MODE)
+        print_string(text, maxlen, " MODE");
+}
+
+static void
+PrintModifierState()
+{
+    char message[512];
+    char *spot;
+    size_t left;
+
+    spot = message;
+    left = sizeof(message);
+
+    print_modifiers(&spot, &left);
+    SDL_Log("Initial state:%s\n", message);
+}
+
+static void
+PrintKey(SDL_Keysym * sym, SDL_bool pressed, SDL_bool repeat)
+{
+    char message[512];
+    char *spot;
+    size_t left;
+
+    spot = message;
+    left = sizeof(message);
+
+    /* Print the keycode, name and state */
+    if (sym->sym) {
+        print_string(&spot, &left,
+                "Key %s:  scancode %d = %s, keycode 0x%08X = %s ",
+                pressed ? "pressed " : "released",
+                sym->scancode,
+                SDL_GetScancodeName(sym->scancode),
+                sym->sym, SDL_GetKeyName(sym->sym));
+    } else {
+        print_string(&spot, &left,
+                "Unknown Key (scancode %d = %s) %s ",
+                sym->scancode,
+                SDL_GetScancodeName(sym->scancode),
+                pressed ? "pressed " : "released");
+    }
+    print_modifiers(&spot, &left);
+    if (repeat) {
+        print_string(&spot, &left, " (repeat)");
+    }
+    SDL_Log("%s\n", message);
+}
+
+static void
+PrintText(char *eventtype, char *text)
+{
+    char *spot, expanded[1024];
+
+    expanded[0] = '\0';
+    for ( spot = text; *spot; ++spot )
+    {
+        size_t length = SDL_strlen(expanded);
+        SDL_snprintf(expanded + length, sizeof(expanded) - length, "\\x%.2x", (unsigned char)*spot);
+    }
+    SDL_Log("%s Text (%s): \"%s%s\"\n", eventtype, expanded, *text == '"' ? "\\" : "", text);
+}
+
+#endif
 
 //FIXME:???!defined(__MINGW32__)
 #if !defined(__MINGW32__) && !USE_GLEW && !defined(__APPLE__)
@@ -326,7 +458,94 @@ initExtensions();
 
     glfwSetErrorCallback(GLFWEventHandler::onGLFWError);
     glfwInit();
-#endif	
+#endif
+
+#if USE_SDL2
+    /* Enable standard application logging */
+    SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);
+
+    /* Load the SDL library */
+    if (SDL_Init(SDL_INIT_AUDIO|SDL_INIT_EVENTS | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER ) < 0) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't initialize SDL: %s\n", SDL_GetError());
+        quit(1);
+    }
+
+//------testgamecontroller.c
+    int i;
+    int nController = 0;
+    int retcode = 0;
+    char guid[64];
+    SDL_GameController *gamecontroller;
+    /* Print information about the controller */
+    for (i = 0; i < SDL_NumJoysticks(); ++i) {
+        const char *name;
+        const char *description;
+
+        SDL_JoystickGetGUIDString(SDL_JoystickGetDeviceGUID(i),
+                                  guid, sizeof (guid));
+
+        if ( SDL_IsGameController(i) )
+        {
+            nController++;
+            name = SDL_GameControllerNameForIndex(i);
+            description = "Controller";
+        } else {
+            name = SDL_JoystickNameForIndex(i);
+            description = "Joystick";
+        }
+#if SDL_VERSION_ATLEAST(2, 0, 6)
+        SDL_Log("%s %d: %s (guid %s, VID 0x%.4x, PID 0x%.4x)\n",
+            description, i, name ? name : "Unknown", guid,
+            SDL_JoystickGetDeviceVendor(i), SDL_JoystickGetDeviceProduct(i));
+#endif
+    }
+    SDL_Log("There are %d game controller(s) attached (%d joystick(s))\n", nController, SDL_NumJoysticks());
+
+
+char *argv1 = "0";
+ if (argv1) {
+        SDL_bool reportederror = SDL_FALSE;
+        SDL_bool keepGoing = SDL_TRUE;
+        SDL_Event event;
+        int device = atoi(argv1);
+        if (device >= SDL_NumJoysticks()) {
+            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "%i is an invalid joystick index.\n", device);
+            retcode = 1;
+        } else {
+            SDL_JoystickGetGUIDString(SDL_JoystickGetDeviceGUID(device),
+                                      guid, sizeof (guid));
+            SDL_Log("Attempting to open device %i, guid %s\n", device, guid);
+            gamecontroller = SDL_GameControllerOpen(device);
+
+            if (gamecontroller != NULL) {
+                SDL_assert(SDL_GameControllerFromInstanceID(SDL_JoystickInstanceID(SDL_GameControllerGetJoystick(gamecontroller))) == gamecontroller);
+            }
+
+        }
+    }
+
+//getchar();
+
+
+//------testgamecontroller.c
+
+#if !USE_NO_GLFW
+    window = SDL_CreateWindow("SDL2 Joystick capture",//"CheckKeys Test",
+                              SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                              0, 0/*640, 480*/, SDL_WINDOW_INPUT_FOCUS/*SDL_WINDOW_INPUT_GRABBED*/ /*SDL_WINDOW_HIDDEN*/);
+    if (!window) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create 640x480 window: %s\n",
+                SDL_GetError());
+        quit(2);
+    }
+#else
+//FIXME:on linux handheld, SDL window by SDL_CreateWindow() will be 
+//empty and transparent, and no video output, 
+//so I must skip this here. 
+//But on X11, SDL_CreateWindow is OK.  
+#endif
+
+#endif
 }
 
 GLViewImpl::~GLViewImpl()
@@ -552,6 +771,7 @@ CCLOGINFO("setFrameSize %f, %f", width, height);
                                    _viewName.c_str(),
                                    _monitor,
                                    nullptr);
+glfwSetWindowPos(_mainWindow, 0, 0); //FIXME:added, show on left top of the screen
     glfwMakeContextCurrent(_mainWindow);
 
     glfwSetMouseButtonCallback(_mainWindow, GLFWEventHandler::onGLFWMouseCallBack);
@@ -687,7 +907,7 @@ void GLViewImpl::end()
     eglTerminate(display);
 #else
     if(_mainWindow)
-    {			
+    {
         glfwSetWindowShouldClose(_mainWindow,1);
         _mainWindow = nullptr;
     }
@@ -736,12 +956,356 @@ bool GLViewImpl::windowShouldClose()
 #endif	
 }
 
+static void convertTo(cocos2d::EventKeyboard::KeyCode key, bool press) {
+        EventKeyboard event(key, press);
+        auto dispatcher = Director::getInstance()->getEventDispatcher();
+        dispatcher->dispatchEvent(&event);
+}
+
 void GLViewImpl::pollEvents()
 {
 #if USE_NO_GLFW	
 //skip???
 #else	
     glfwPollEvents();
+#endif
+
+#if USE_SDL2
+    SDL_Event event;
+    /* Check for events */
+    /*SDL_WaitEvent(&event); emscripten does not like waiting*/
+
+    while (SDL_PollEvent(&event)) {
+        switch (event.type) {
+        case SDL_KEYDOWN:
+        case SDL_KEYUP: 
+	{
+            PrintKey(&event.key.keysym, (event.key.state == SDL_PRESSED) ? SDL_TRUE : SDL_FALSE, (event.key.repeat) ? SDL_TRUE : SDL_FALSE);
+
+#if USE_NO_GLFW	
+#else
+//FIXME: added, to escape for PC
+if (event.key.keysym.sym == SDLK_ESCAPE)
+{
+	exit(0);
+}
+#endif
+
+//miyoo a30 key translate:
+//A=44=SPACE
+//B=224/0x400000E0=LCTRL
+//Y=226/0x400000E2=LALT
+//X=225/0x400000E1=LSHIFT
+//Left/0x40000050=80
+//Right/0x4000004F=79
+//Up/0x40000052=82
+//Down/0x40000051=81
+//L1=43=TAB
+//L2=8=E
+//R1=42=BACKSPACE
+//R2=23=T
+//Vol-=129/0x40000081=VOLUMEDOWN
+//Vol+=128/0x40000080=VOLUMEUP
+//Menu=27/(41?)/0x0000001B=ESCAPE
+//Select=228/0x400000E4=RCTRL
+//Start=40=RETURN
+//Power=102/0x40000066=POWER
+
+//SDL_Keysym:
+//SDL_ScanCode scancode = event.key.keysym.scancode;
+SDL_Keycode key = event.key.keysym.sym;
+
+/*UP*/if (key == 82 || key == 0x40000052) convertTo(EventKeyboard::KeyCode::KEY_TAB/*KEY_UP_ARROW*/, event.key.state == SDL_PRESSED);
+/*DOWN*/if (key == 81 || key == 0x40000051) convertTo(EventKeyboard::KeyCode::KEY_TAB/*KEY_DOWN_ARROW*/, event.key.state == SDL_PRESSED);
+/*LEFT*/if (key == 80 || key == 0x40000050) convertTo(EventKeyboard::KeyCode::KEY_LEFT_ARROW, event.key.state == SDL_PRESSED);
+/*RIGHT*/if (key == 79 || key == 0x4000004F) convertTo(EventKeyboard::KeyCode::KEY_RIGHT_ARROW, event.key.state == SDL_PRESSED);
+
+/*A*/if (key == 44) return convertTo(EventKeyboard::KeyCode::KEY_RETURN, event.key.state == SDL_PRESSED);
+/*B*/if (key == 224 || key == 0x400000E0) convertTo(EventKeyboard::KeyCode::KEY_SPACE, event.key.state == SDL_PRESSED);
+/*X*/if (key == 225 || key == 0x400000E1) convertTo(EventKeyboard::KeyCode::KEY_R, event.key.state == SDL_PRESSED); //history log
+/*Y*/if (key == 226 || key == 0x400000E2) convertTo(EventKeyboard::KeyCode::KEY_ESCAPE, event.key.state == SDL_PRESSED); //game menu //or 
+
+/*L1*/if (key == 43) convertTo(EventKeyboard::KeyCode::KEY_F, event.key.state == SDL_PRESSED); //auto fast forward
+/*R1*/if (key == 42) convertTo(EventKeyboard::KeyCode::KEY_CTRL, event.key.state == SDL_PRESSED); //manual fast forward, not good
+/*Start*/if (key == 40) convertTo(EventKeyboard::KeyCode::KEY_A, event.key.state == SDL_PRESSED); //auto not good
+// /*Select*/if (key == 228 || key == 0x400000E4) return ?;
+/*Menu*/if (key == 27 || key == 41 || key == 0x0000001B) exit(0);
+	}
+        break;
+        
+	case SDL_TEXTEDITING:
+            PrintText("EDIT", event.text.text);
+            break;
+        case SDL_TEXTINPUT:
+            PrintText("INPUT", event.text.text);
+            break;
+        case SDL_MOUSEBUTTONDOWN:
+            /* Left button quits the app, other buttons toggles text input */
+            if (event.button.button == SDL_BUTTON_LEFT) {
+                done = 1;
+            } else {
+                if (SDL_IsTextInputActive()) {
+                    SDL_Log("Stopping text input\n");
+                    SDL_StopTextInput();
+                } else {
+                    SDL_Log("Starting text input\n");
+                    SDL_StartTextInput();
+                }
+            }
+            break;
+        case SDL_QUIT:
+            done = 1;
+            break;
+
+
+
+	case SDL_CONTROLLERBUTTONDOWN:
+	case SDL_CONTROLLERBUTTONUP: {
+#if 1//defined(USE_DEBUG_INPUT)
+SDL_Log("%s, %s, %d\n", 
+(event.type == SDL_CONTROLLERBUTTONDOWN) ? 
+"SDL_CONTROLLERBUTTONDOWN" : 
+"SDL_CONTROLLERBUTTONUP", 
+(event.cbutton.state == SDL_PRESSED) ? 
+"SDL_PRESSED" : 
+"SDL_RELEASED", 
+event.cbutton.button);
+#endif				
+		switch (event.cbutton.state) {
+			case SDL_PRESSED:
+#if 1						
+				//TVPPostInputEvent(new tTVPOnKeyDownInputEvent(TJSNativeInstance, sdl_gamecontrollerbutton_to_vk_key(event.cbutton.button, &isQuit, s, 0, TJSNativeInstance), s));
+#endif
+
+//trimui smart pro:
+//UP:11
+//DOWN:12
+//LEFT:13
+//RIGHT:14
+//A:1(joy 1, only up)
+//B:0(joy 0)
+//X:3(joy 3)
+//Y:2(joy 2)
+//L1:9(Joy 4)
+//L2:10(Joy 5)
+//Start:6(Joy 7)
+//Select:4(Joy 6)
+//Menu:5(Joy 8)
+//joy: joyaxismotion
+//key: Power(102, VolumeUp(128), VolumeDown(129)
+//===
+//plan:
+//A=return=kag3.Return
+//B=space=kag3.Space
+//X=fast=kag3.F(#'F')
+//Y=menu=kag3.ESC=message history
+//
+//Select=????
+//Start=auto=kag3.A
+//Menu=exit=???kage3.exit
+//
+//L1=left?=?kag3.B=back?
+//R1=right?
+//
+//?=kage3.S=save?
+//?=kage3.L=load?
+
+if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP)
+{
+        EventKeyboard event(EventKeyboard::KeyCode::KEY_UP_ARROW, true);
+        auto dispatcher = Director::getInstance()->getEventDispatcher();
+        dispatcher->dispatchEvent(&event);
+}
+if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN)
+{
+        EventKeyboard event(EventKeyboard::KeyCode::KEY_DOWN_ARROW, true);
+        auto dispatcher = Director::getInstance()->getEventDispatcher();
+        dispatcher->dispatchEvent(&event);
+}
+if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_LEFT)
+{
+        EventKeyboard event(EventKeyboard::KeyCode::KEY_LEFT_ARROW, true);
+        auto dispatcher = Director::getInstance()->getEventDispatcher();
+        dispatcher->dispatchEvent(&event);
+}
+if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_RIGHT)
+{
+        EventKeyboard event(EventKeyboard::KeyCode::KEY_RIGHT_ARROW, true);
+        auto dispatcher = Director::getInstance()->getEventDispatcher();
+        dispatcher->dispatchEvent(&event);
+}
+
+if (event.cbutton.button == SDL_CONTROLLER_BUTTON_A)
+{
+        EventKeyboard event(EventKeyboard::KeyCode::KEY_RETURN, true);
+        auto dispatcher = Director::getInstance()->getEventDispatcher();
+        dispatcher->dispatchEvent(&event);
+}
+if (event.cbutton.button == SDL_CONTROLLER_BUTTON_B)
+{
+        EventKeyboard event(EventKeyboard::KeyCode::KEY_SPACE, true);
+        auto dispatcher = Director::getInstance()->getEventDispatcher();
+        dispatcher->dispatchEvent(&event);
+}
+if (event.cbutton.button == SDL_CONTROLLER_BUTTON_X)
+{
+        EventKeyboard event(EventKeyboard::KeyCode::KEY_R, true);
+        auto dispatcher = Director::getInstance()->getEventDispatcher();
+        dispatcher->dispatchEvent(&event);
+}
+if (event.cbutton.button == SDL_CONTROLLER_BUTTON_Y)
+{
+        EventKeyboard event(EventKeyboard::KeyCode::KEY_ESCAPE, true);
+        auto dispatcher = Director::getInstance()->getEventDispatcher();
+        dispatcher->dispatchEvent(&event);
+}
+if (event.cbutton.button == SDL_CONTROLLER_BUTTON_START)
+{
+        EventKeyboard event(EventKeyboard::KeyCode::KEY_A, true);
+        auto dispatcher = Director::getInstance()->getEventDispatcher();
+        dispatcher->dispatchEvent(&event);
+}
+if (event.cbutton.button == SDL_CONTROLLER_BUTTON_BACK)
+{
+        EventKeyboard event(EventKeyboard::KeyCode::KEY_TAB, true);
+        auto dispatcher = Director::getInstance()->getEventDispatcher();
+        dispatcher->dispatchEvent(&event);
+}
+if (event.cbutton.button == 9)
+{
+        EventKeyboard event(EventKeyboard::KeyCode::KEY_F, true);
+        auto dispatcher = Director::getInstance()->getEventDispatcher();
+        dispatcher->dispatchEvent(&event);
+}
+if (event.cbutton.button == 10)
+{
+        EventKeyboard event(EventKeyboard::KeyCode::KEY_CTRL, true);
+        auto dispatcher = Director::getInstance()->getEventDispatcher();
+        dispatcher->dispatchEvent(&event);
+}
+if (event.cbutton.button == 5)
+{
+exit(0);//Menu
+}
+
+				break;
+				
+			case SDL_RELEASED:
+#if 1
+				if (!SDL_IsTextInputActive())
+				{
+					//TVPPostInputEvent(new tTVPOnKeyPressInputEvent(TJSNativeInstance, sdl_gamecontrollerbutton_to_vk_key(event.cbutton.button, &isQuit, s, 0, TJSNativeInstance)));
+				}						
+				//TVPPostInputEvent(new tTVPOnKeyUpInputEvent(TJSNativeInstance, sdl_gamecontrollerbutton_to_vk_key(event.cbutton.button, &isQuit, s, 1, TJSNativeInstance), s));
+#else
+//sdl_gamecontrollerbutton_to_vk_key(event.cbutton.button, &isQuit, s, 1, TJSNativeInstance);
+#endif								
+				//if (isQuit) {
+					//TVPPostInputEvent(new tTVPOnCloseInputEvent(TJSNativeInstance));
+				//}
+
+
+
+
+if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP)
+{
+        EventKeyboard event(EventKeyboard::KeyCode::KEY_UP_ARROW, false);
+        auto dispatcher = Director::getInstance()->getEventDispatcher();
+        dispatcher->dispatchEvent(&event);
+}
+if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN)
+{
+        EventKeyboard event(EventKeyboard::KeyCode::KEY_DOWN_ARROW, false);
+        auto dispatcher = Director::getInstance()->getEventDispatcher();
+        dispatcher->dispatchEvent(&event);
+}
+if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_LEFT)
+{
+        EventKeyboard event(EventKeyboard::KeyCode::KEY_LEFT_ARROW, false);
+        auto dispatcher = Director::getInstance()->getEventDispatcher();
+        dispatcher->dispatchEvent(&event);
+}
+if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_RIGHT)
+{
+        EventKeyboard event(EventKeyboard::KeyCode::KEY_RIGHT_ARROW, false);
+        auto dispatcher = Director::getInstance()->getEventDispatcher();
+        dispatcher->dispatchEvent(&event);
+}
+
+if (event.cbutton.button == SDL_CONTROLLER_BUTTON_A)
+{
+        EventKeyboard event(EventKeyboard::KeyCode::KEY_RETURN, false);
+        auto dispatcher = Director::getInstance()->getEventDispatcher();
+        dispatcher->dispatchEvent(&event);
+}
+if (event.cbutton.button == SDL_CONTROLLER_BUTTON_B)
+{
+        EventKeyboard event(EventKeyboard::KeyCode::KEY_SPACE, false);
+        auto dispatcher = Director::getInstance()->getEventDispatcher();
+        dispatcher->dispatchEvent(&event);
+}
+if (event.cbutton.button == SDL_CONTROLLER_BUTTON_X)
+{
+        EventKeyboard event(EventKeyboard::KeyCode::KEY_R, false);
+        auto dispatcher = Director::getInstance()->getEventDispatcher();
+        dispatcher->dispatchEvent(&event);
+}
+if (event.cbutton.button == SDL_CONTROLLER_BUTTON_Y)
+{
+        EventKeyboard event(EventKeyboard::KeyCode::KEY_ESCAPE, false);
+        auto dispatcher = Director::getInstance()->getEventDispatcher();
+        dispatcher->dispatchEvent(&event);
+}
+if (event.cbutton.button == SDL_CONTROLLER_BUTTON_START)
+{
+        EventKeyboard event(EventKeyboard::KeyCode::KEY_A, false);
+        auto dispatcher = Director::getInstance()->getEventDispatcher();
+        dispatcher->dispatchEvent(&event);
+}
+if (event.cbutton.button == SDL_CONTROLLER_BUTTON_BACK)
+{
+        EventKeyboard event(EventKeyboard::KeyCode::KEY_TAB, false);
+        auto dispatcher = Director::getInstance()->getEventDispatcher();
+        dispatcher->dispatchEvent(&event);
+}
+if (event.cbutton.button == 9)
+{
+        EventKeyboard event(EventKeyboard::KeyCode::KEY_F, false);
+        auto dispatcher = Director::getInstance()->getEventDispatcher();
+        dispatcher->dispatchEvent(&event);
+}
+if (event.cbutton.button == 10)
+{
+        EventKeyboard event(EventKeyboard::KeyCode::KEY_CTRL, false);
+        auto dispatcher = Director::getInstance()->getEventDispatcher();
+        dispatcher->dispatchEvent(&event);
+}
+if (event.cbutton.button == 5)
+{
+exit(0);//Menu
+}
+
+				break;
+		}
+	}
+	break;
+	
+	case SDL_JOYBUTTONDOWN:
+		//SDL_Log("%s, %d\n", "SDL_JOYBUTTONDOWN", event.jbutton.button);
+		break;
+ 
+	case SDL_JOYBUTTONUP:
+		//SDL_Log("%s, %d\n", "SDL_JOYBUTTONUP", event.jbutton.button);
+		break;
+
+	case SDL_JOYAXISMOTION:
+		//SDL_Log("%s, %d\n", "SDL_JOYAXISMOTION");
+		break;
+
+        default:
+            break;
+        }
+    }
 #endif
 }
 

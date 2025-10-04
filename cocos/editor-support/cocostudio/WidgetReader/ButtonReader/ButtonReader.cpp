@@ -849,7 +849,7 @@ printf("<<< ButtonReader: button->setTitleText == %s\n", titleText.c_str());
         //Color3B titleColor(0, 0, 0);
         Color3B titleColor(textColor->r(), textColor->g(), textColor->b());
         button->setTitleColor(titleColor);
- 
+        
         int titleFontSize = options->fontSize();
         button->setTitleFontSize(titleFontSize);
         

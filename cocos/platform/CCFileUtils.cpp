@@ -536,6 +536,10 @@ bool FileUtils::init()
 {
     _searchPathArray.push_back(_defaultResRootPath);
     _searchResolutionsOrderArray.push_back("");
+    
+printf("<<<<<<< FileUtils::init size: %d\n", _searchResolutionsOrderArray.size());
+fflush(stdout); //don't use CCLOG
+    
     return true;
 }
 
@@ -728,7 +732,7 @@ std::string FileUtils::getPathForFilename(const std::string& filename, const std
     std::string path = searchPath;
     path += file_path;
     path += resolutionDirectory;
-    
+//CCLOG("getPathForFilename, mid path = %s", path.c_str());
     path = getFullPathForDirectoryAndFilename(path, file);
     
     //CCLOG("getPathForFilename, fullPath = %s", path.c_str());
@@ -761,7 +765,8 @@ std::string FileUtils::fullPathForFilename(const std::string &filename) const
     
     for (const auto& searchIt : _searchPathArray)
     {
-//CCLOG("cocos2d: searchIt : %s", searchIt.c_str());   			
+//CCLOG("cocos2d: searchIt : %s", searchIt.c_str());	
+CCLOG("cocos2d: searchIt : %s, newFilename : %s, _searchResolutionsOrderArray : %d", searchIt.c_str(), newFilename.c_str(), _searchResolutionsOrderArray.size());
         for (const auto& resolutionIt : _searchResolutionsOrderArray)
         {
             fullpath = this->getPathForFilename(newFilename, resolutionIt, searchIt);
@@ -814,6 +819,7 @@ void FileUtils::setSearchResolutionsOrder(const std::vector<std::string>& search
     {
         _searchResolutionsOrderArray.push_back("");
     }
+CCLOG("cocos2d: setSearchResolutionsOrder size: %d", searchResolutionsOrder.size());
 }
 
 void FileUtils::addSearchResolutionsOrder(const std::string &order,const bool front)
@@ -827,10 +833,12 @@ void FileUtils::addSearchResolutionsOrder(const std::string &order,const bool fr
     } else {
         _searchResolutionsOrderArray.push_back(resOrder);
     }
+CCLOG("cocos2d: addSearchResolutionsOrder size: %d", _searchResolutionsOrderArray.size());
 }
 
 const std::vector<std::string>& FileUtils::getSearchResolutionsOrder() const
 {
+CCLOG("cocos2d: getSearchResolutionsOrder size: %d", _searchResolutionsOrderArray.size());
     return _searchResolutionsOrderArray;
 }
 
@@ -962,13 +970,25 @@ std::string FileUtils::searchFullPathForFilename(const std::string& filename) co
 
 bool FileUtils::isFileExist(const std::string& filename) const
 {
+#if defined(ANDROID)
+	__android_log_print(ANDROID_LOG_ERROR, "CCFileUtils.cpp", "%s", "*** *** FileUtils::isFileExist 001");
+#endif
     if (isAbsolutePath(filename))
     {
+#if defined(ANDROID)
+		__android_log_print(ANDROID_LOG_ERROR, "CCFileUtils.cpp", "%s", "*** *** FileUtils::isFileExist 002");
+#endif
         return isFileExistInternal(filename);
     }
     else
     {
+#if defined(ANDROID)
+		__android_log_print(ANDROID_LOG_ERROR, "CCFileUtils.cpp", "%s", "*** *** FileUtils::isFileExist 003");
+#endif
         std::string fullpath = searchFullPathForFilename(filename);
+#if defined(ANDROID)
+		__android_log_print(ANDROID_LOG_ERROR, "CCFileUtils.cpp", "%s", "*** *** FileUtils::isFileExist 004");
+#endif
         if (fullpath.empty())
             return false;
         else

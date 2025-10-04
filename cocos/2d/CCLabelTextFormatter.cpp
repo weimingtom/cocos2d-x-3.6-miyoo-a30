@@ -199,7 +199,7 @@ bool LabelTextFormatter::alignText(Label *theLabel)
         theLabel->setContentSize(Size(theLabel->_labelWidth,theLabel->_contentSize.height));
     }
 
-    for (int ctr = 0; ctr <= strLen; ++ctr)
+    for (int ctr = 0; ctr <= strLen && ctr < (int)strWhole.size(); ++ctr)
     { 
         char16_t currentChar = strWhole[ctr];
 

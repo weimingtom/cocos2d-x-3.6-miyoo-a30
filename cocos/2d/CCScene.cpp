@@ -169,13 +169,13 @@ void Scene::render(Renderer* renderer)
         //visit the scene
         visit(renderer, transform, 0);
 #if MY_USE_TIME_REPORT		
-long lastTime = getCurrentMillSecond();
+//long lastTime = getCurrentMillSecond();
 #endif
         renderer->render();
 #if MY_USE_TIME_REPORT		
-long curTime = getCurrentMillSecond();
-printf("<<<<<<<<<<<<<<<< Scene::render, curTime - lastTime == %ld\n", (curTime - lastTime));
-fflush(stdout);          
+//long curTime = getCurrentMillSecond();
+//printf("<<<<<<<<<<<<<<<< Scene::render, curTime - lastTime == %ld\n", (curTime - lastTime));
+//fflush(stdout);          
 #endif
         director->popMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION);
     }

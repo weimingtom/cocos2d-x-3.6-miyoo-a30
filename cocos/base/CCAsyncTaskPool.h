@@ -109,6 +109,9 @@ protected:
         ThreadTasks()
         : _stop(false)
         {
+#if defined(ANDROID)
+			__android_log_print(ANDROID_LOG_ERROR, "CCAsyncTaskPool.h", "%s", "*** *** ThreadTasks");
+#endif		
             _thread = std::thread(
                                   [this]
                                   {

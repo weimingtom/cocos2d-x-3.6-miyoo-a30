@@ -261,6 +261,9 @@ Scheduler::Scheduler(void)
 {
     // I don't expect to have more than 30 functions to all per frame
     _functionsToPerform.reserve(30);
+#if defined(ANDROID)
+	__android_log_print(ANDROID_LOG_ERROR, "CCScheduler.cpp", "%s", "*** *** Scheduler");
+#endif
 }
 
 Scheduler::~Scheduler(void)

@@ -95,7 +95,7 @@ CPPFLAGS += -DMY_USE_UIBUTTON_SETTITLECOLOR=1
 CPPFLAGS2 := 
 CPPFLAGS2 += -std=c++11 
 
-CPPFLAGS += -fno-exceptions 
+#CPPFLAGS += -fno-exceptions 
 CPPFLAGS += -fexceptions 
 
 CPPFLAGS += -Wno-deprecated-declarations 
@@ -153,7 +153,7 @@ CPPFLAGS += -I/home/wmt/work_a30/staging_dir/target/usr/include
 CPPFLAGS += -I/home/wmt/work_a30/staging_dir/target/usr/include/webp
 CPPFLAGS += -I/home/wmt/work_a30/staging_dir/target/usr/include/freetype2
 else
-#xubuntu 20
+#ubuntu 16 and xubuntu 20
 #sudo apt install libglfw3-dev libpng-dev zlib1g-dev libjpeg-dev libfreetype-dev libbz2-dev
 CPPFLAGS += -I/usr/include
 CPPFLAGS += -I/usr/include/webp
