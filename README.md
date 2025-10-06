@@ -162,3 +162,15 @@ visionfive2的opengl卡顿问题我似乎找到方法解决了，
 * see USEGLEW
 * make USEGLEW=1 clean
 * make USEGLEW=1 -j8
+
+## Steam Deck Ubuntu 25.04 build
+```
+我测试过，如果用steam deck的tf卡启动ubuntu 25.04的livecd模式（rufus烧录），
+它的glew+glfw3是会自带AMD GPU驱动的，不需要自己装显卡驱动，
+只要自己写的代码使用了glew和glfw3的dev软件包即可。
+如图，我是用cocos2d-x输出renderer信息，或者用
+mesa-utils的glxinfo | grep renderer
+也可以看到使用了硬件显卡驱动。还有一种方法是
+自己写一段代码去输出GL_RENDERER信息
+（和cocos2d-x的输出渲染器信息是一样的方法）
+```
