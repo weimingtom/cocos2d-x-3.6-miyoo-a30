@@ -59,7 +59,7 @@ CPPFLAGS += -DUSE_APP_WIDTH=640
 CPPFLAGS += -DUSE_APP_HEIGHT=480
 
 #sudo apt install libglew-dev libglfw3-dev
-USEGLEW:=0
+USEGLEW:=1
 
 ifeq ($(USEGLEW),1)
 #opengl on x11

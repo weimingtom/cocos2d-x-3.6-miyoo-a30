@@ -91,7 +91,7 @@ CPPFLAGS += -DMY_USE_FONT_HIDE_BUG=1
 CPPFLAGS2 := 
 CPPFLAGS2 += -std=c++11 
 
-CPPFLAGS += -fno-exceptions 
+#CPPFLAGS += -fno-exceptions 
 CPPFLAGS += -fexceptions 
 
 CPPFLAGS += -Wno-deprecated-declarations 

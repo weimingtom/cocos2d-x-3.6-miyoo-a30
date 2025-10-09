@@ -66,6 +66,7 @@ CPPFLAGS += -DCOCOS2D_DEBUG=1
 CPPFLAGS2 := 
 CPPFLAGS2 += -std=c++11 
 
+#CPPFLAGS += -fno-exceptions 
 CPPFLAGS += -fexceptions 
 
 CPPFLAGS += -Wno-deprecated-declarations 
@@ -388,7 +389,6 @@ OBJS += external/unzip/unzip.o
 #LDFLAGS += ../../lib/libxxhash.a 
 OBJS += external/xxhash/xxhash.o
 
-
 #ui
 OBJS += cocos/ui/UIWidget.o
 OBJS += cocos/ui/UILayout.o
@@ -553,7 +553,6 @@ OBJS += extensions/GUI/CCControlExtension/CCInvocation.o
 OBJS += extensions/GUI/CCScrollView/CCScrollView.o
 OBJS += extensions/GUI/CCScrollView/CCTableView.o
 OBJS += extensions/GUI/CCScrollView/CCTableViewCell.o
-
 
 HELLOCPP_OBJS :=
 HELLOCPP_OBJS += tests/cpp-empty-test/Classes/AppDelegate.o

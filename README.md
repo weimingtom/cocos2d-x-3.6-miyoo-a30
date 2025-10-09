@@ -45,14 +45,15 @@ guiForLua.rar
 * For PC, xubuntu 20.04 64bit  
 libbz2-dev isn't necessary, only for cross compiling  
 ```
+sudo apt install libglew-dev
 sudo apt install libglfw3-dev
 sudo apt install libfreetype-dev
 sudo apt install libjpeg-dev
 sudo apt install libbz2-dev
 sudo apt install make gcc g++ gdb
 
-make MIYOO=0 clean
-make MIYOO=0 -j8
+make MIYOO=0 USEGLEW=1 clean
+make MIYOO=0 USEGLEW=1 -j8
 make test
 ```
 * For TRIMUI SMART PRO  
